@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;import org.junit.runners.Suite;
 			MPLongTest.class,  
 			MPMapTest.class,  
 			MPNullTest.class,  
-			MPRawTest.class,  
+			MPRawTest.class 
 		}
 )
 
