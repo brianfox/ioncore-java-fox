@@ -1,0 +1,8 @@
+bin/
+.settings/
+.classpath
+doc/doxygen/html/
+doc/doxygen/latex/
+doc/doxygen/config/debug.txt
+doc/javadoc
+.DS_Store
