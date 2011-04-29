@@ -1,4 +1,6 @@
 bin/
+build/
+reports/
 .settings/
 .classpath
 doc/doxygen/html/
