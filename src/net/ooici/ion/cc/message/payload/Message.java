@@ -34,4 +34,9 @@ public class Message {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("HEADER:%n%s%nBODY:%n%s", header, body);
+	}
 }

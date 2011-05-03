@@ -28,4 +28,13 @@ public class Header {
 			return map.get(key);
 		return null;
 	}
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		for (String key : map.keySet()) {
+			sb.append(String.format("\t%-20s\t%-40s%n", key, map.get(key)));
+		}
+		return sb.toString();
+	}
 }
