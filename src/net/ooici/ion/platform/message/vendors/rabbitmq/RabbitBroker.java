@@ -19,7 +19,7 @@ import net.ooici.ion.properties.PropertiesException;
  * @author brianfox
  *
  */
-public class RabbitBroker implements Broker {
+public class RabbitBroker extends Broker {
 
 	private static Logger log = Logger.getLogger(RabbitBroker.class);
 

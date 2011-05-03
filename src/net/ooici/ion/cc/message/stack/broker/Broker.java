@@ -1,6 +1,7 @@
 package net.ooici.ion.cc.message.stack.broker;
 
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
+import net.ooici.ion.lifecycle.BasicLifeCycleObject;
 
 
 /**
@@ -11,7 +12,7 @@ import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
  * @author brianfox
  *
  */
-public interface Broker {
+public abstract class Broker extends BasicLifeCycleObject {
 
 	/**
 	 * Prompts this Broker to create an ExchangeSpace representation in the 
@@ -20,7 +21,7 @@ public interface Broker {
 	 * @param mailbox specifies the parameters for the new ExchangeSpace.
 	 * @throws BrokerException thrown if the ExchangeSpace cannot be created.
 	 */
-	void createExchangeSpace(Mailbox mailbox)
+	abstract public void createExchangeSpace(Mailbox mailbox)
 	throws BrokerException;
 	
 
@@ -32,7 +33,7 @@ public interface Broker {
 	 * @param mailbox specifies the parameters for the new ExchangeName.
 	 * @throws BrokerException thrown if the binding cannot be created.
 	 */
-	void createExchangeName(Mailbox mailbox) 
+	abstract public void createExchangeName(Mailbox mailbox) 
 	throws BrokerException;
 	
 	
@@ -44,7 +45,7 @@ public interface Broker {
 	 * @param mailbox specifies the parameters for the new Queue.
 	 * @throws BrokerException thrown if the binding cannot be created.
 	 */
-	void createQueue(Mailbox mailbox)
+	abstract public void createQueue(Mailbox mailbox)
 	throws BrokerException;
 
 	
@@ -56,7 +57,7 @@ public interface Broker {
 	 * @param mailbox specifies the parameters for the new Binding.
 	 * @throws BrokerException thrown if the binding cannot be created.
 	 */
-	void createBinding(Mailbox mailbox)
+	abstract public void createBinding(Mailbox mailbox)
 	throws BrokerException;
 
 	
@@ -66,12 +67,12 @@ public interface Broker {
 	 * 
 	 * @throws BrokerException thrown if this broker cannot be closed.
 	 */
-	void close() 
+	abstract public void close() 
 	throws BrokerException;
 
 
 
-	void createMailbox(Mailbox mailbox) throws BrokerException;
+	abstract public void createMailbox(Mailbox mailbox) throws BrokerException;
 	
 	
 }
