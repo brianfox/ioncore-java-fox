@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
+import net.ooici.ion.cc.ContainerException;
 import net.ooici.ion.cc.message.MessageManager;
 import net.ooici.ion.cc.message.QosPriority;
 import net.ooici.ion.cc.message.exchange.ExchangeName;
@@ -15,15 +16,15 @@ import net.ooici.ion.cc.message.payload.Header;
 import net.ooici.ion.cc.message.payload.Message;
 import net.ooici.ion.cc.message.stack.MessageStack;
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
-import net.ooici.ion.cc.message.stack.mailbox.ProcessMailbox;
-import net.ooici.ion.config.LocalProperties;
+import net.ooici.ion.cc.message.stack.mailbox.BurstMailbox;
 import net.ooici.ion.platform.message.vendors.rabbitmq.RabbitBroker;
+import net.ooici.ion.properties.LocalProperties;
 
 public class Container {
 
 	private static Logger log = Logger.getLogger(RabbitBroker.class);
 	
-	private MessageManager msgManager;
+	protected MessageManager msgManager;
 
 	public static void main(String[] args) 
 	throws 
@@ -37,7 +38,7 @@ public class Container {
 		ExchangeName en = new ExchangeName(ExchangeType.PROCESS, "entest");
 		Queue qu = new Queue("qutest"); 
 
-		ProcessMailbox m = new ProcessMailbox(es, en, qu);
+		BurstMailbox m = new BurstMailbox(es, en, qu);
 		container.msgManager.registerMailbox(QosPriority.HIGH, m);
 
 		HashMap<String,String> map = new HashMap<String,String>();
@@ -59,15 +60,15 @@ public class Container {
 	throws 
 		ContainerException
 	{
-		MessageStack ms = msgManager.getMessageSystem(priority);
-		ms.registerMailbox(mailbox);
+		msgManager.registerMailbox(priority, mailbox);
 	}
+
 
 	public void start() {
 		try {
 			log.info(String.format("%s starting", this.getClass().getSimpleName()));
 			LocalProperties properties = new LocalProperties();
-			properties.load("./configuration/container.properties");
+			properties.load("./properties/container.properties");
 			msgManager = new MessageManager(properties.getSection(MessageManager.CONFIG_SECTION));
 			log.info(String.format("%s started successfully", this.getClass().getSimpleName()));
 		} catch (Exception e) {
