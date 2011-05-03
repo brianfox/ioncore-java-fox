@@ -34,7 +34,7 @@ public class BurstMailbox extends Mailbox {
 		HashMap<String,String> map = new HashMap<String,String>();
 		map.put("a","A");
 		map.put("b","B");
-		map.put("long",new String(new byte[1000]));
+		map.put("long",new String(new byte[10000]));
 		Header header = new Header(map);
 		try {
 			if (count % burstSize == 0) {

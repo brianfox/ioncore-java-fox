@@ -17,10 +17,11 @@ import net.ooici.ion.cc.message.payload.Message;
 import net.ooici.ion.cc.message.stack.MessageStack;
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
 import net.ooici.ion.cc.message.stack.mailbox.BurstMailbox;
+import net.ooici.ion.lifecycle.BasicLifeCycleObject;
 import net.ooici.ion.platform.message.vendors.rabbitmq.RabbitBroker;
 import net.ooici.ion.properties.LocalProperties;
 
-public class Container {
+public class Container extends BasicLifeCycleObject {
 
 	private static Logger log = Logger.getLogger(RabbitBroker.class);
 	

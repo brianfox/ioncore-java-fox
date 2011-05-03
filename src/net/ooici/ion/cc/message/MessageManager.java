@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import net.ooici.ion.cc.ContainerException;
 import net.ooici.ion.cc.message.stack.MessageStack;
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
+import net.ooici.ion.lifecycle.BasicLifeCycleObject;
 import net.ooici.ion.properties.LocalProperties;
 import net.ooici.ion.properties.PropertiesException;
 import net.ooici.util.msgpack.Container;
@@ -19,7 +20,7 @@ import net.ooici.util.msgpack.Container;
  * @author brianfox
  *
  */
-public class MessageManager {
+public class MessageManager extends BasicLifeCycleObject {
 
 	private static Logger log = Logger.getLogger(MessageManager.class);
 

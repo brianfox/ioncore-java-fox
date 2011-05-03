@@ -15,11 +15,12 @@ import net.ooici.ion.cc.message.stack.interceptor.InterceptorStack.IncomingDecis
 import net.ooici.ion.cc.message.stack.interceptor.InterceptorStack.OutgoingDecision;
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
 import net.ooici.ion.cc.message.stack.serialization.SerializationException;
+import net.ooici.ion.lifecycle.BasicLifeCycleObject;
 import net.ooici.ion.properties.LocalProperties;
 import net.ooici.ion.properties.PropertiesException;
 
 
-public abstract class Dispatcher {
+public abstract class Dispatcher extends BasicLifeCycleObject {
 
 	protected Broker broker;
 	// protected MailboxScheduler scheduler;

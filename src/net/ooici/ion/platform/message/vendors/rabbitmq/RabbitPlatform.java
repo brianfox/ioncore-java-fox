@@ -35,8 +35,6 @@ public class RabbitPlatform implements Platform {
 	public Dispatcher createDispatcher(
 			LocalProperties properties,
 			Broker broker
-			//,
-//			MessageSystem messageSystem
 	) 
 		throws 
 			PlatformException {

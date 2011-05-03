@@ -47,10 +47,10 @@ public class ExperimentalContainer extends Container {
 		String s = new String(new byte[2000]);
 		map.put("c", s);
 		Header header = new Header(map);
-		for (int i=0; i < 500000; i++)
+		for (int i=0; i < 500; i++)
 			new Message(header, new Body());
 		m.send(new Message(header, new Body()));
-		Thread.sleep(300000);
+		Thread.sleep(3000);
 		container.stop();
 		
 	}

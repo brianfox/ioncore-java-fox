@@ -1,5 +1,7 @@
 package net.ooici.ion.cc.process;
 
-public class Service {
+import net.ooici.ion.lifecycle.BasicLifeCycleObject;
+
+public class Service extends BasicLifeCycleObject {
 
 }
