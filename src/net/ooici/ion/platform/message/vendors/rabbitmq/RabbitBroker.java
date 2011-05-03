@@ -11,8 +11,8 @@ import com.rabbitmq.client.ConnectionFactory;
 import net.ooici.ion.cc.message.stack.broker.Broker;
 import net.ooici.ion.cc.message.stack.broker.BrokerException;
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
-import net.ooici.ion.config.LocalProperties;
-import net.ooici.ion.config.PropertiesException;
+import net.ooici.ion.properties.LocalProperties;
+import net.ooici.ion.properties.PropertiesException;
 
 /**
  * 

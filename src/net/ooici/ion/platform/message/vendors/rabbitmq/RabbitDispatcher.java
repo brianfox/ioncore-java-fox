@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import net.ooici.ion.cc.message.stack.broker.*;
 import net.ooici.ion.cc.message.stack.dispatcher.*;
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
-import net.ooici.ion.config.*;
+import net.ooici.ion.properties.*;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.MessageProperties;
