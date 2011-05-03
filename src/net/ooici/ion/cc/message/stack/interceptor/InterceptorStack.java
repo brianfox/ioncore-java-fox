@@ -9,9 +9,9 @@ import net.ooici.ion.cc.message.payload.Message;
 import net.ooici.ion.cc.message.payload.MessageException;
 import net.ooici.ion.cc.message.stack.serialization.SerializationException;
 import net.ooici.ion.cc.message.stack.serialization.Serializer;
-import net.ooici.ion.config.LocalProperties;
 import net.ooici.ion.platform.serialization.generic.MsgpackSerializer;
 import net.ooici.ion.platform.serialization.generic.NullSerializer;
+import net.ooici.ion.properties.LocalProperties;
 
 
 public class InterceptorStack {

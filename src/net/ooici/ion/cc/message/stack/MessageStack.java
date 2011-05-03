@@ -6,11 +6,24 @@ import net.ooici.ion.cc.ContainerException;
 import net.ooici.ion.cc.message.stack.broker.Broker;
 import net.ooici.ion.cc.message.stack.dispatcher.Dispatcher;
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
-import net.ooici.ion.config.LocalProperties;
 import net.ooici.ion.platform.message.Platform;
 import net.ooici.ion.platform.message.PlatformFactory;
 import net.ooici.ion.platform.message.PlatformType;
+import net.ooici.ion.properties.LocalProperties;
 
+/**
+ * Provides a colelction of messaging utilities.  The stack can handle both incoming 
+ * and outgoing traffic.  It is comprised of the following pieces:
+ * <ol>
+ * <li>{@link Broker} A generic messaging broker which can perform broker ExchangeSpace, ExchangeName, Queue,
+ * Binding, and Mailbox declarations.</li>
+ * <li>{@link Dispatcher} A multi-threaded message dispatcher which sends and receives messages.</li>
+ * <li>{@link InterceptorStack} A series of filters which allow or disallow messages from being sent.</li>
+ * </ol>
+ *   
+ * @author brianfox
+ *
+ */
 public class MessageStack {
 
 	private static Logger log = Logger.getLogger(MessageStack.class);

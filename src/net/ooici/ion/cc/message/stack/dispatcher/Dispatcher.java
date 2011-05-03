@@ -15,8 +15,8 @@ import net.ooici.ion.cc.message.stack.interceptor.InterceptorStack.IncomingDecis
 import net.ooici.ion.cc.message.stack.interceptor.InterceptorStack.OutgoingDecision;
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
 import net.ooici.ion.cc.message.stack.serialization.SerializationException;
-import net.ooici.ion.config.LocalProperties;
-import net.ooici.ion.config.PropertiesException;
+import net.ooici.ion.properties.LocalProperties;
+import net.ooici.ion.properties.PropertiesException;
 
 
 public abstract class Dispatcher {

@@ -49,7 +49,7 @@ public class ProcessMailbox extends Mailbox {
 			float mps = count * 1.0F / sec;
 			log.info(String.format("Count:  %20d    Msg/s:  %5.2f", count, mps));
 		}
-		//		for (String s : m.getHeader().keySet())
-//			System.out.println(s);
+		// for (String s : m.getHeader().keySet())
+		//	System.out.println(s);
 	}
 }
