@@ -2,6 +2,7 @@
  
 	<property name="src.dir" value="src" />
 	<property name="test.dir" value="test" />
+	<property name="play.dir" value="play" />
  
 	<property name="build.dir" value="build" />
 	<property name="classes.dir" value="${build.dir}/classes" />
@@ -23,8 +24,7 @@
  
 	<target name="compile">
 		<mkdir dir="${classes.dir}" />
-		<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath" />
-		<javac srcdir="${test.dir}" destdir="${classes.dir}" classpathref="classpath" />
+		<javac srcdir="${src.dir}:${play.dir}:${test.dir}" destdir="${classes.dir}" classpathref="classpath" />
 	</target>
  
 	<target name="jar" depends="compile">
