@@ -12,7 +12,7 @@ import net.ooici.ion.properties.PropertiesException;
  *   
  * @author brianfox
  */
-public interface Platform {
+abstract public class Platform {
 	
 	/**
 	 * Creates a new Broker.
@@ -25,7 +25,7 @@ public interface Platform {
 	 * @throws PropertiesException 
 	 * @throws BrokerException 
 	 */
-	Broker createBroker(LocalProperties properties) 
+	abstract public Broker createBroker(LocalProperties properties) 
 	throws 
 		PlatformException, 
 		BrokerException, 
@@ -47,7 +47,7 @@ public interface Platform {
 	 * @throws BrokerException 
 	 * @throws PropertiesException 
 	 */
-	Dispatcher createDispatcher(
+	abstract public Dispatcher createDispatcher(
 			LocalProperties config, 
 			Broker controller 
 //			MessageSystem messageSystem

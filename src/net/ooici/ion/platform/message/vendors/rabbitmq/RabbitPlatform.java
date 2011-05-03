@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import net.ooici.ion.cc.message.stack.broker.Broker;
 import net.ooici.ion.cc.message.stack.broker.BrokerException;
 import net.ooici.ion.cc.message.stack.dispatcher.Dispatcher;
+import net.ooici.ion.lifecycle.BasicLifeCycleObject;
 import net.ooici.ion.platform.message.Platform;
 import net.ooici.ion.platform.message.PlatformException;
 import net.ooici.ion.properties.LocalProperties;
@@ -17,7 +18,7 @@ import net.ooici.ion.properties.PropertiesException;
  * @author brianfox
  *
  */
-public class RabbitPlatform implements Platform {
+public class RabbitPlatform extends Platform {
 	
 	private static Logger log = Logger.getLogger(RabbitPlatform.class);
 
