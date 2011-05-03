@@ -43,15 +43,19 @@ public class MsgpackSerializer implements Serializer {
 	{
 		Header header = message.getHeader();
 		Body body = message.getBody();
+
+		byte[] encHeader;
+		byte[] encBody;
 		
 		MPMap mmap = new MPMap();
 		try {
 			for (String key : header.keySet())
 				mmap.put(new MPRaw(key), new MPRaw(header.get(key)));
-			return mmap.encode();
+			encHeader = mmap.encode();
 		} catch (MessagePackException e) {
 			throw new SerializationException("Could not encode message", e);
 		}
+		return encHeader;
 	}
 
 }
