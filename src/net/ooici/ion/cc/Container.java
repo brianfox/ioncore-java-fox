@@ -1,61 +1,39 @@
 package net.ooici.ion.cc;
 
-import java.util.HashMap;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Observable;
 
 import org.apache.log4j.Logger;
 
 import net.ooici.ion.cc.ContainerException;
 import net.ooici.ion.cc.message.MessageManager;
 import net.ooici.ion.cc.message.QosPriority;
-import net.ooici.ion.cc.message.exchange.ExchangeName;
-import net.ooici.ion.cc.message.exchange.ExchangeSpace;
-import net.ooici.ion.cc.message.exchange.ExchangeType;
-import net.ooici.ion.cc.message.exchange.Queue;
-import net.ooici.ion.cc.message.payload.Body;
-import net.ooici.ion.cc.message.payload.Header;
-import net.ooici.ion.cc.message.payload.Message;
-import net.ooici.ion.cc.message.stack.MessageStack;
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
-import net.ooici.ion.cc.message.stack.mailbox.BurstMailbox;
-import net.ooici.ion.lifecycle.BasicLifeCycleObject;
+import net.ooici.ion.lifecycle.LifeCycle;
+import net.ooici.ion.lifecycle.LifeCycleException;
 import net.ooici.ion.platform.message.vendors.rabbitmq.RabbitBroker;
 import net.ooici.ion.properties.LocalProperties;
 
-public class Container extends BasicLifeCycleObject {
+public class Container extends LifeCycle {
 
 	private static Logger log = Logger.getLogger(RabbitBroker.class);
 	
 	protected MessageManager msgManager;
-
-	public static void main(String[] args) 
-	throws 
-		Exception
-	{
-		Container container = new Container();
-		container.start();
-		
-
-		ExchangeSpace es = new ExchangeSpace("estest");
-		ExchangeName en = new ExchangeName(ExchangeType.PROCESS, "entest");
-		Queue qu = new Queue("qutest"); 
-
-		BurstMailbox m = new BurstMailbox(es, en, qu);
-		container.msgManager.registerMailbox(QosPriority.HIGH, m);
-
-		HashMap<String,String> map = new HashMap<String,String>();
-		map.put("a","A");
-		map.put("b","B");
-		String s = new String(new byte[2000]);
-		map.put("c", s);
-		Header header = new Header(map);
-		for (int i=0; i < 500000; i++)
-			new Message(header, new Body());
-		m.send(new Message(header, new Body()));
-		Thread.sleep(300000);
-		container.stop();
-		
-	}
 	
+	
+	public Container() {
+		try {
+			LocalProperties properties = new LocalProperties();
+			properties.load("./properties/container.properties");
+			
+			msgManager = new MessageManager(properties.getSection(MessageManager.CONFIG_SECTION));
+			msgManager.addObserver(this);
+		
+		} catch (Exception e) {
+			slc_error(e);
+		} 
+	}
 	
 	public void registerMailbox(QosPriority priority, Mailbox mailbox) 
 	throws 
@@ -64,27 +42,38 @@ public class Container extends BasicLifeCycleObject {
 		msgManager.registerMailbox(priority, mailbox);
 	}
 
+	
+	
+	/*
+	 * LIFE CYCLE METHODS 
+	 */
 
-	public void start() {
+	@Override
+	public void update(Observable o, Object arg) {
+		//System.err.print(o + "   " + arg);
+	}
+
+	
+	@Override
+	public void slc_activate() 
+	throws LifeCycleException 
+	{
+		super.slc_activate();
 		try {
-			log.info(String.format("%s starting", this.getClass().getSimpleName()));
-			LocalProperties properties = new LocalProperties();
-			properties.load("./properties/container.properties");
-			msgManager = new MessageManager(properties.getSection(MessageManager.CONFIG_SECTION));
-			log.info(String.format("%s started successfully", this.getClass().getSimpleName()));
+			msgManager.slc_activate();
 		} catch (Exception e) {
-			e.printStackTrace();
+			super.slc_error(e);
 		}
 	}
 
-	public void stop() {
-		try {
-			log.info("Container stopping.");
-			msgManager.close();
-			log.info("Container stopped successfully.");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	@Override
+	public void slc_terminate() 
+	throws LifeCycleException 
+	{
+		super.slc_terminate();
+		msgManager.slc_terminate();
 	}
+
+
 }
 

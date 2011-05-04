@@ -1,5 +1,6 @@
 package net.ooici.ion.cc.message.stack.dispatcher;
 
+import java.util.Observable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -15,12 +16,13 @@ import net.ooici.ion.cc.message.stack.interceptor.InterceptorStack.IncomingDecis
 import net.ooici.ion.cc.message.stack.interceptor.InterceptorStack.OutgoingDecision;
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
 import net.ooici.ion.cc.message.stack.serialization.SerializationException;
-import net.ooici.ion.lifecycle.BasicLifeCycleObject;
+import net.ooici.ion.lifecycle.LifeCycle;
+import net.ooici.ion.lifecycle.LifeCycleException;
 import net.ooici.ion.properties.LocalProperties;
 import net.ooici.ion.properties.PropertiesException;
 
 
-public abstract class Dispatcher extends BasicLifeCycleObject {
+public abstract class Dispatcher extends LifeCycle {
 
 	protected Broker broker;
 	// protected MailboxScheduler scheduler;
@@ -67,7 +69,6 @@ public abstract class Dispatcher extends BasicLifeCycleObject {
 				max_thread_count,
 				keep_alive_time_ms
 		));
-
 		// A separate thread may be overkill here.  But it does add some
 		// flexibility for logging and stopping the thread.
 		schedulerThread = new SchedulerThread(
@@ -75,13 +76,6 @@ public abstract class Dispatcher extends BasicLifeCycleObject {
 				max_thread_count,
 				keep_alive_time_ms
 		);
-		schedulerThread.start();
-
-		log.info(String.format(
-				"%s started successfully",
-				this.getClass().getSimpleName()
-		));
-		
 		this.interceptorStack = new InterceptorStack(null);
 		
 	}
@@ -93,10 +87,11 @@ public abstract class Dispatcher extends BasicLifeCycleObject {
 		BrokerException;
 
 	
-	abstract public void unregisterMailbox(Mailbox m);
+	abstract public void unregisterMailbox(Mailbox m) throws LifeCycleException;
 	
 
-	public void dispatch(MessageQueue queue) {
+	public void dispatch(MessageQueue queue) throws LifeCycleException {
+		checkState(log, "dispatch", LifeCycle.State.ACTIVE);
 		schedule(queue);
 	}
 
@@ -105,8 +100,11 @@ public abstract class Dispatcher extends BasicLifeCycleObject {
 	throws 
 		DispatcherException, 
 		BrokerException, 
-		SerializationException 
+		SerializationException, 
+		LifeCycleException 
 	{
+		checkState(log, "send", LifeCycle.State.ACTIVE);
+
 		if (message == null)
 			throw new DispatcherException("Could not send null rabbit packet.");
 
@@ -132,20 +130,19 @@ public abstract class Dispatcher extends BasicLifeCycleObject {
 			String routingKey, 
 			byte[] raw
 	) 
-	throws DispatcherException;
+	throws DispatcherException, LifeCycleException;
 	
 	
 	
 	
-	public void schedule(MessageQueue queue) {
+	public void schedule(MessageQueue queue) 
+	throws LifeCycleException 
+	{
+		checkState(log, "send", LifeCycle.State.ACTIVE);
 		schedulerThread.schedule(queue);
 	}
 	
 	
-	public void close() {
-		schedulerThread.cancel();
-		log.info(String.format("Closed %s.", this.getClass().getSimpleName()));
-	}
 	
 	
 	
@@ -247,5 +244,41 @@ public abstract class Dispatcher extends BasicLifeCycleObject {
 		}
 		
 	}
+
 	
+	/*
+	 * LIFE CYCLE METHODS 
+	 */
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// System.err.print(o + "   " + arg);
+	}
+	
+	
+	@Override
+	public void slc_init() 
+	throws LifeCycleException 
+	{
+		
+	}
+	
+
+	@Override
+	public void slc_activate() 
+	throws LifeCycleException 
+	{			
+		super.slc_activate();
+		schedulerThread.start();
+	}
+
+	
+	@Override
+	public void slc_terminate() 
+	throws LifeCycleException 
+	{
+		super.slc_terminate();
+		schedulerThread.cancel();
+	}
+
 }

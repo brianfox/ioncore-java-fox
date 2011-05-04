@@ -12,10 +12,11 @@ import net.ooici.ion.cc.message.stack.broker.BrokerException;
 import net.ooici.ion.cc.message.stack.dispatcher.Dispatcher;
 import net.ooici.ion.cc.message.stack.dispatcher.DispatcherException;
 import net.ooici.ion.cc.message.stack.serialization.SerializationException;
-import net.ooici.ion.lifecycle.BasicLifeCycleObject;
+import net.ooici.ion.lifecycle.LifeCycle;
+import net.ooici.ion.lifecycle.LifeCycleException;
 
 
-public abstract class Mailbox extends BasicLifeCycleObject {
+public abstract class Mailbox extends LifeCycle {
 	
 	private static Logger log = Logger.getLogger(Mailbox.class);
 	
@@ -54,7 +55,7 @@ public abstract class Mailbox extends BasicLifeCycleObject {
 	
 	public void send(Message message) 
 	throws 
-		ContainerException	
+		ContainerException, LifeCycleException	
 	{
 		dispatcher.send(message);
 	}

@@ -47,7 +47,7 @@ abstract public class Platform {
 	 * @throws BrokerException 
 	 * @throws PropertiesException 
 	 */
-	abstract public Dispatcher createDispatcher(
+     abstract public Dispatcher createDispatcher(
 			LocalProperties config, 
 			Broker controller 
 //			MessageSystem messageSystem

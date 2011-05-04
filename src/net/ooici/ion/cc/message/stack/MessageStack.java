@@ -1,12 +1,15 @@
 package net.ooici.ion.cc.message.stack;
 
+import java.util.Observable;
+
 import org.apache.log4j.Logger;
 
 import net.ooici.ion.cc.ContainerException;
 import net.ooici.ion.cc.message.stack.broker.Broker;
 import net.ooici.ion.cc.message.stack.dispatcher.Dispatcher;
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
-import net.ooici.ion.lifecycle.BasicLifeCycleObject;
+import net.ooici.ion.lifecycle.LifeCycle;
+import net.ooici.ion.lifecycle.LifeCycleException;
 import net.ooici.ion.platform.message.Platform;
 import net.ooici.ion.platform.message.PlatformFactory;
 import net.ooici.ion.platform.message.PlatformType;
@@ -25,7 +28,7 @@ import net.ooici.ion.properties.LocalProperties;
  * @author brianfox
  *
  */
-public class MessageStack  extends BasicLifeCycleObject {
+public class MessageStack  extends LifeCycle {
 
 	private static Logger log = Logger.getLogger(MessageStack.class);
 
@@ -49,45 +52,76 @@ public class MessageStack  extends BasicLifeCycleObject {
 			platform = PlatformFactory.createPlatform(type);
 			broker = platform.createBroker(p.getSection("Broker"));
 			dispatcher = platform.createDispatcher(p.getSection("Dispatcher"), broker);
-	
+			
+			broker.addObserver(this);
+			dispatcher.addObserver(this);
+			
 			log.info(String.format("%s started successfully", this.getClass().getSimpleName()));
 		}
-		
-		/* 
-		 * Any error is an indication that startup failed. 
-		 */
 		catch (Exception e) {
-			this.close();
-			String err = String.format(
-					"%s failed to start.  Closing.", 
-					this.getClass().getSimpleName()
-			);
-			log.error(err);
-			throw new MessageStackException(err, e);
+			this.slc_error(e);
 		}
 	}
 
-	
-	public void close() 
-	{
-		/* 
-		 * Closing subsystems will always be fragile.  Assume failure is a 
-		 * possibility.  Log any errors, but take no other action.         
-		 */
-		try { broker.close();      } catch (Exception e) { log.error("Error closing broker: " + e.getMessage()); }
-		try { dispatcher.close();  } catch (Exception e) { log.error("Error closing dispatcher: " + e.getMessage()); }
-		
-		log.info(String.format("Closed %s", this.getClass().getSimpleName()));
-	}
 
 	
 	public void registerMailbox(Mailbox mailbox) 
 	throws 
-		ContainerException
+		MessageStackException
 	{
-		broker.createMailbox(mailbox);
-		dispatcher.registerMailbox(mailbox);
-		mailbox.setDispatcher(dispatcher);
+		if (state != LifeCycle.State.ACTIVE) 
+			throw new MessageStackException(String.format(
+					"Cannot register mailbox while %s is in the %s state",
+					this.getClass().getSimpleName(),
+					state
+					));
+					
+		try {
+			broker.createMailbox(mailbox);
+			dispatcher.registerMailbox(mailbox);
+			mailbox.setDispatcher(dispatcher);
+		}
+		catch (Exception e) {
+			throw new MessageStackException("Could not register mailbox", e);
+		}
+	}
+
+	
+	/*
+	 * LIFE CYCLE METHODS 
+	 */
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// System.err.print(o + "   " + arg);
+	}
+	
+	
+	@Override
+	public void slc_init() 
+	throws LifeCycleException 
+	{
+		
+	}
+	
+
+	@Override
+	public void slc_activate() 
+	throws LifeCycleException 
+	{			
+		super.slc_activate();
+		broker.slc_activate();
+		dispatcher.slc_activate();
+	}
+
+	
+	@Override
+	public void slc_terminate() 
+	throws LifeCycleException 
+	{
+		super.slc_terminate();
+		broker.slc_terminate();
+		dispatcher.slc_terminate();
 	}
 
 

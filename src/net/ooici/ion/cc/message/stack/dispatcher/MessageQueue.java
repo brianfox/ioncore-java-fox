@@ -3,6 +3,7 @@ package net.ooici.ion.cc.message.stack.dispatcher;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
+import net.ooici.ion.lifecycle.LifeCycleException;
 
 public class MessageQueue {
 	private Mailbox mailbox;
@@ -28,7 +29,9 @@ public class MessageQueue {
 		
 	}
 
-	public void dispatch() {
+	public void dispatch() 
+	throws LifeCycleException 
+	{
 		owner.dispatch(this);
 	}
 }

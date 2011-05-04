@@ -20,18 +20,14 @@ import net.ooici.ion.cc.message.stack.mailbox.BurstMailbox;
 import net.ooici.ion.platform.message.vendors.rabbitmq.RabbitBroker;
 import net.ooici.ion.properties.LocalProperties;
 
-public class ExperimentalContainer extends Container {
-
-	private static Logger log = Logger.getLogger(RabbitBroker.class);
-	
-	private MessageManager msgManager;
+public class ExperimentalContainer {
 
 	public static void main(String[] args) 
 	throws 
 		Exception
 	{
 		Container container = new Container();
-		container.start();
+		container.slc_activate();
 		
 
 		ExchangeSpace es = new ExchangeSpace("estest");
@@ -39,7 +35,7 @@ public class ExperimentalContainer extends Container {
 		Queue qu = new Queue("qutest"); 
 
 		BurstMailbox m = new BurstMailbox(es, en, qu);
-		container.msgManager.registerMailbox(QosPriority.HIGH, m);
+		container.registerMailbox(QosPriority.HIGH, m);
 
 		HashMap<String,String> map = new HashMap<String,String>();
 		map.put("a","A");
@@ -50,40 +46,10 @@ public class ExperimentalContainer extends Container {
 		for (int i=0; i < 500; i++)
 			new Message(header, new Body());
 		m.send(new Message(header, new Body()));
-		Thread.sleep(3000);
-		container.stop();
+		Thread.sleep(300000);
+		container.slc_terminate();
 		
 	}
 	
-	
-	public void registerMailbox(QosPriority priority, Mailbox mailbox) 
-	throws 
-		ContainerException
-	{
-		msgManager.registerMailbox(priority, mailbox);
-	}
-
-
-	public void start() {
-		try {
-			log.info(String.format("%s starting", this.getClass().getSimpleName()));
-			LocalProperties properties = new LocalProperties();
-			properties.load("./properties/container.properties");
-			msgManager = new MessageManager(properties.getSection(MessageManager.CONFIG_SECTION));
-			log.info(String.format("%s started successfully", this.getClass().getSimpleName()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void stop() {
-		try {
-			log.info("Container stopping.");
-			msgManager.close();
-			log.info("Container stopped successfully.");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
 

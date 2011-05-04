@@ -1,12 +1,15 @@
 package net.ooici.ion.platform.message.vendors.rabbitmq;
 
 import java.io.IOException;
+import java.util.Observable;
 
 import org.apache.log4j.Logger;
 
 import net.ooici.ion.cc.message.stack.broker.*;
 import net.ooici.ion.cc.message.stack.dispatcher.*;
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
+import net.ooici.ion.lifecycle.LifeCycle;
+import net.ooici.ion.lifecycle.LifeCycleException;
 import net.ooici.ion.properties.*;
 
 import com.rabbitmq.client.Channel;
@@ -42,19 +45,11 @@ public class RabbitDispatcher extends Dispatcher {
 	{
 		// super(broker, scheduler);
 		super(properties, broker);
-		log.info(String.format("%s starting", this.getClass().getSimpleName()));
 
 		// Properties setup
 		checkProperties(properties);
 		this.properties = properties;
 		this.rbroker = (RabbitBroker)broker;
-		
-		// We need a working channel for obvious reasons
-		this.channel = rbroker.getChannel();
-
-		
-		log.info(String.format("%s started successfully", this.getClass().getSimpleName()));
-
 	}
 
 
@@ -101,7 +96,9 @@ public class RabbitDispatcher extends Dispatcher {
 
 	
 	@Override
-	public void unregisterMailbox(Mailbox m) {
+	public void unregisterMailbox(Mailbox m) throws LifeCycleException {
+		checkState(log, "publish", LifeCycle.State.ACTIVE);
+
 		// TODO Auto-generated method stub
 		
 	}
@@ -127,16 +124,11 @@ public class RabbitDispatcher extends Dispatcher {
 	@Override
 	protected void publish(String address, String routingKey, byte[] raw) 
 	throws 
-		DispatcherException 
+		DispatcherException, 
+		LifeCycleException 
 	{
-		// basicPublish(
-		//     java.lang.String exchange, 
-		//     java.lang.String routingKey, 
-		//     boolean mandatory, 
-		//     boolean immediate, 
-		//     AMQP.BasicProperties props, 
-		//     byte[] body
-		// ) 
+		checkState(log, "publish", LifeCycle.State.ACTIVE);
+
 		for (int i=0; i < 2; i++) {
 			try {
 				channel.basicPublish(
@@ -164,6 +156,44 @@ public class RabbitDispatcher extends Dispatcher {
 		String err = String.format("Could not send rabbit message.  Addr: %s  RoutingKey: %s", address, routingKey);
 		log.error(err);
 		throw new DispatcherException(err);
+	}
+
+	
+	/*
+	 * LIFE CYCLE METHODS 
+	 */
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// System.err.print(o + "   " + arg);
+	}
+	
+	
+	@Override
+	public void slc_activate() 
+	throws LifeCycleException 
+	{			
+		super.slc_activate();
+		try {
+			channel = rbroker.getChannel();
+		} catch (BrokerException e) {
+			slc_error(e);
+		}
+	}
+
+	
+	@Override
+	public void slc_terminate() 
+	throws LifeCycleException 
+	{
+		super.slc_terminate();
+		try {
+			if (channel.isOpen()) 
+				channel.close();
+		}
+		catch (IOException e) {
+			slc_error(e);
+		}
 	}
 
 

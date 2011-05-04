@@ -1,11 +1,16 @@
 package net.ooici.ion.lifecycle;
 
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
-public class BasicLifeCycleObject extends Observable implements Observer {
+import net.ooici.ion.cc.message.stack.broker.BrokerException;
 
-	public enum LifeCycleState {
+import org.apache.log4j.Logger;
+
+public class LifeCycle extends Observable implements Observer {
+
+	public enum State {
 		
 		//  Initial state. From the instance the container 
 		// starts the process from source code
@@ -30,68 +35,110 @@ public class BasicLifeCycleObject extends Observable implements Observer {
 		
 		int ordinal;
 		
-		LifeCycleState(int ordinal) {
+		State(int ordinal) {
 			this.ordinal = ordinal;
 		}
 	}
 	
-	protected LifeCycleState state = LifeCycleState.NEW;
+	protected State state = State.NEW;
+	protected Exception exception = null;
+	
+	private static HashMap<String,Logger> cachedLoggers = new HashMap<String,Logger>();
 	
 	
-	public void slc_init() 
+	
+	protected void slc_init() 
 	throws LifeCycleException 
 	{
-		changeState(state, LifeCycleState.INIT);
+		changeState(state, State.INIT);
 	}
 	
 	
-	public void slc_activate() 
+	protected void slc_activate() 
 	throws LifeCycleException 
 	{
-		changeState(state, LifeCycleState.ACTIVE);
+		changeState(state, State.ACTIVE);
 	}
 	
 	
-	public void slc_deactivate() 
+	protected void slc_deactivate() 
 	throws LifeCycleException 
 	{
-		changeState(state, LifeCycleState.INACTIVE);
+		changeState(state, State.INACTIVE);
 	}
 	
 	
-	public void slc_terminate() 
+	protected void slc_terminate() 
 	throws LifeCycleException 
 	{
-		changeState(state, LifeCycleState.TERMINATED);
+		changeState(state, State.TERMINATED);
 	}
 	
 	
-	public void slc_error() 
-	throws LifeCycleException 
+	protected void slc_error(Exception e) 
 	{
-		changeState(state, LifeCycleState.ERROR);
+		exception = e;
+		try {
+			changeState(state, State.ERROR);
+		} catch (LifeCycleException e1) {
+			state = State.ERROR;
+		}
+	}
+
+
+	private Logger getLogger(String className) {
+		if (cachedLoggers.containsKey(className))
+			return cachedLoggers.get(className);
+		Logger log = Logger.getLogger(className);
+		cachedLoggers.put(className, log);
+		return log;
 	}
 	
-	
-	private void changeState(LifeCycleState original, LifeCycleState next) 
+	private void changeState(State original, State next) 
 	throws LifeCycleException 
 	{
-		System.out.println("Observers count: " + this.countObservers());
-		if (next != LifeCycleState.ERROR && next.ordinal <= original.ordinal)
+		Logger log = getLogger(this.getClass().getName());
+		log.info(String.format(
+				"State Change for %-45s:  %s -> %s",
+				this.getClass().getSimpleName() + 
+				String.format(" (@%08x)",
+					this.hashCode()
+				),
+				original,
+				next
+			));
+
+		if (next != State.ERROR && next.ordinal <= original.ordinal)
 			throw new LifeCycleException(String.format(
 					"Cannot progress from LifeCycleState %s to %s", 
 					original, 
 					next
 			));
-		state = next;
+		state = next; 
 		setChanged();
 		notifyObservers(state);
 	}
+	
 
+	protected void checkState(Logger log, String method, State... allowed)
+	throws LifeCycleException
+	{
+		for (State s : allowed)
+			if (this.state == s)
+				return;
+		String err = 
+			String.format(
+				"Cannot use %s, object state is %s",
+				// this.getClass().getSimpleName(),
+				method,
+				state
+			);
+		log.error(err);
+		throw new LifeCycleException(err);
+	}
 
 	/**
-	 * This should be overrided if this class is meant to observe other 
-	 * classes and take action on changes. 
+	 * Override this method if this class is meant to observe other objects. 
 	 */
 	@Override
 	public void update(Observable o, Object arg) {

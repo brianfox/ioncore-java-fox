@@ -1,6 +1,7 @@
 package net.ooici.ion.platform.message.vendors.rabbitmq;
 
 import java.io.IOException;
+import java.util.Observable;
 
 import org.apache.log4j.Logger;
 
@@ -11,6 +12,8 @@ import com.rabbitmq.client.ConnectionFactory;
 import net.ooici.ion.cc.message.stack.broker.Broker;
 import net.ooici.ion.cc.message.stack.broker.BrokerException;
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
+import net.ooici.ion.lifecycle.LifeCycle;
+import net.ooici.ion.lifecycle.LifeCycleException;
 import net.ooici.ion.properties.LocalProperties;
 import net.ooici.ion.properties.PropertiesException;
 
@@ -28,9 +31,14 @@ public class RabbitBroker extends Broker {
 		new String[]{"host","port","username","password","vhost"};
 	
 	private LocalProperties properties;
-	private Connection connection;
 
-	
+	private Connection connection;
+	private ConnectionFactory factory; 
+	private String username;
+	private String password;
+	private String vhost;
+	private String host;
+	private int port;
 
 	/**
 	 * RabbitBroker only permits factory pattern object construction.  
@@ -65,13 +73,12 @@ public class RabbitBroker extends Broker {
 		this.properties = properties;
 		checkProperties(this.properties);
 
-		String username = properties.getString("username");
-		String password = properties.getString("password");
-		String vhost = properties.getString("vhost");
-		String host = properties.getString("host");
-		int port = properties.getInt("port");
+		username = properties.getString("username");
+		password = properties.getString("password");
+		vhost = properties.getString("vhost");
+		host = properties.getString("host");
+		port = properties.getInt("port");
 
-		ConnectionFactory factory = new ConnectionFactory();
 		factory = new ConnectionFactory();
 		factory.setUsername(username);
 		factory.setPassword(password);
@@ -79,22 +86,6 @@ public class RabbitBroker extends Broker {
 		factory.setHost(host);
 		factory.setPort(port);
 
-		try {
-			connection = factory.newConnection();
-			log.info(String.format(
-					"%s starting:  host=%s   port=%d   username=%s   vhost=%s",
-					this.getClass().getSimpleName(),
-					host,
-					port,
-					username,
-					vhost
-			));
-		} 
-		catch(IOException e) {
-			String err = String.format("failed to create broker: %s", e.getMessage());
-			log.error(err);
-			throw new BrokerException(err);
-		}
 		log.info(String.format("%s started successfully", this.getClass().getSimpleName()));
 
 	}
@@ -129,8 +120,8 @@ public class RabbitBroker extends Broker {
 	 * @throws BrokerException
 	 */
 	public Channel getChannel() throws BrokerException {
-		
 		try {
+			checkState(log, "getChannel", LifeCycle.State.ACTIVE);
 			return connection.createChannel();
 		} catch (Exception e) {
 			String err = String.format("Could not create rabbit channel: %s", e.getMessage());
@@ -140,37 +131,22 @@ public class RabbitBroker extends Broker {
 	}
 
 	
-
-	
-	@Override
-	public void close() 
-	throws 
-		BrokerException 
-	{
-		try {
-			connection.close();
-			
-			log.info(String.format("Closed %s.", this.getClass().getSimpleName()));
-		}
-		catch (IOException e) {
-			String err = String.format("Could not close broker: %s", e.getMessage());
-			log.error(err);
-			throw new BrokerException(err, e);
-		}
-	}
-
-	
-
 	/**
 	 * Uses this RabbitMQ broker connection to create a Mailbox and
 	 * bind it to a Queue.  This method combines the calls of 
 	 * createExchangeSpace, createExchangeName, createQueue, 
 	 * and createBinding into one convenience call.
+	 * @throws LifeCycleException 
 	 *   
 	 */
 	@Override
 	public void createMailbox(Mailbox mailbox) 
-	throws BrokerException {
+	throws 
+		BrokerException, 
+		LifeCycleException 
+	{
+		checkState(log, "createMailbox", LifeCycle.State.ACTIVE);
+		
 		createExchangeSpace(mailbox);
 		createExchangeName(mailbox);
 		createQueue(mailbox);
@@ -188,9 +164,13 @@ public class RabbitBroker extends Broker {
 	 */
 	@Override
 	public void createExchangeSpace(Mailbox mailbox) 
-	throws BrokerException {
+	throws 
+		LifeCycleException
+	{
 		// This is a purposeful no op.  There is no ExchangeSpace equivalent 
 		// representation in AMQP
+
+		checkState(log, "createExchangeSpace", LifeCycle.State.ACTIVE);
 		log.debug("Created exchange space: " + mailbox.getExchangeSpace().getName());
 	}
 
@@ -204,7 +184,12 @@ public class RabbitBroker extends Broker {
 	 *   
 	 */
 	@Override
-	public void createExchangeName(Mailbox mailbox) throws BrokerException {
+	public void createExchangeName(Mailbox mailbox) 
+	throws 
+		BrokerException, 
+		LifeCycleException
+	{
+		checkState(log, "createExchangeName", LifeCycle.State.ACTIVE);
 		try {
 			Channel channel = null;
 			channel = connection.createChannel();
@@ -232,7 +217,12 @@ public class RabbitBroker extends Broker {
 	 *   
 	 */
 	@Override
-	public void createQueue(Mailbox mailbox) throws BrokerException {
+	public void createQueue(Mailbox mailbox) 
+	throws 
+		BrokerException, 
+		LifeCycleException
+	{
+		checkState(log, "createQueue", LifeCycle.State.ACTIVE);
 		try {
 			Channel channel = null;
 			channel = connection.createChannel();
@@ -240,7 +230,7 @@ public class RabbitBroker extends Broker {
 			channel.close();
 			log.debug("Created queue: " + mailbox.getQueue().getName());
 		} 
-		catch (IOException e) {
+		catch (Exception e) {
 			String err = String.format(
 					"could not create queue: %s  error: %s", 
 					RabbitExchangeMap.getQueueName(mailbox), 
@@ -253,7 +243,12 @@ public class RabbitBroker extends Broker {
 
 
 	@Override
-	public void createBinding(Mailbox mailbox) throws BrokerException {
+	public void createBinding(Mailbox mailbox)
+	throws 
+		BrokerException, 
+		LifeCycleException
+	{
+		checkState(log, "createBinding", LifeCycle.State.ACTIVE);
 		try {
 			Channel channel = null;
 			channel = connection.createChannel();
@@ -266,7 +261,7 @@ public class RabbitBroker extends Broker {
 					mailbox.getQueue().getName()
 			));
 		} 
-		catch (IOException e) {
+		catch (Exception e) {
 			String err = String.format(
 					"could not create binding: %s  error: %s", 
 					RabbitExchangeMap.getQueueName(mailbox), 
@@ -275,7 +270,52 @@ public class RabbitBroker extends Broker {
 			log.error(err);
 			throw new BrokerException(err, e);
 		} 
-
 	}
+
+	
+	/*
+	 * LIFE CYCLE METHODS 
+	 */
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// System.err.print(o + "   " + arg);
+	}
+	
+	
+	@Override
+	public void slc_init() 
+	throws LifeCycleException 
+	{
+		
+	}
+	
+
+	@Override
+	public void slc_activate() 
+	throws LifeCycleException 
+	{			
+		super.slc_activate();
+		try {
+			connection = factory.newConnection();
+		} catch (IOException e) {
+			slc_error(e);
+		}
+	}
+
+	
+	@Override
+	public void slc_terminate() 
+	throws LifeCycleException 
+	{
+		super.slc_terminate();
+		try {
+			connection.close();
+		}
+		catch (IOException e) {
+			slc_error(e);
+		}
+	}
+
 
 }

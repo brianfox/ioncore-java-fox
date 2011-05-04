@@ -1,5 +1,6 @@
 package net.ooici.ion.cc.message;
 
+import java.util.Observable;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
@@ -7,7 +8,8 @@ import org.apache.log4j.Logger;
 import net.ooici.ion.cc.ContainerException;
 import net.ooici.ion.cc.message.stack.MessageStack;
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
-import net.ooici.ion.lifecycle.BasicLifeCycleObject;
+import net.ooici.ion.lifecycle.LifeCycle;
+import net.ooici.ion.lifecycle.LifeCycleException;
 import net.ooici.ion.properties.LocalProperties;
 import net.ooici.ion.properties.PropertiesException;
 import net.ooici.util.msgpack.Container;
@@ -20,7 +22,7 @@ import net.ooici.util.msgpack.Container;
  * @author brianfox
  *
  */
-public class MessageManager extends BasicLifeCycleObject {
+public class MessageManager extends LifeCycle {
 
 	private static Logger log = Logger.getLogger(MessageManager.class);
 
@@ -47,7 +49,6 @@ public class MessageManager extends BasicLifeCycleObject {
 		ContainerException, 
 		PropertiesException
 	{
-		
 		stacks = new ConcurrentHashMap<QosPriority,MessageStack>();
 		
 		if (properties.containsKey("divisions")) {
@@ -68,7 +69,6 @@ public class MessageManager extends BasicLifeCycleObject {
 				stacks.put(QosPriority.fromString(d), new MessageStack(p));
 			}
 		}
-	
 	}
 
 	
@@ -92,16 +92,36 @@ public class MessageManager extends BasicLifeCycleObject {
 	
 	
 	
-	/**
-	 * 
-	 * @throws ContainerException
+	
+	
+	/*
+	 * LIFE CYCLE METHODS 
 	 */
-	public void close() 
-	throws 
-		ContainerException 
-	{
-		for (MessageStack s : stacks.values())
-			s.close();
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// System.err.print(arg);
 	}
+	
+	
+	@Override
+	public void slc_activate() 
+	throws LifeCycleException 
+	{
+		super.slc_activate();
+		for (MessageStack s : this.stacks.values())
+			s.slc_activate();
+	}
+
+	
+	@Override
+	public void slc_terminate() 
+	throws LifeCycleException 
+	{
+		super.slc_terminate();
+		for (MessageStack s : stacks.values())
+			s.slc_terminate();
+	}
+
 
 }

@@ -1,7 +1,10 @@
 package net.ooici.ion.cc.message.stack.broker;
 
+import java.util.Observable;
+
 import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
-import net.ooici.ion.lifecycle.BasicLifeCycleObject;
+import net.ooici.ion.lifecycle.LifeCycle;
+import net.ooici.ion.lifecycle.LifeCycleException;
 
 
 /**
@@ -12,7 +15,7 @@ import net.ooici.ion.lifecycle.BasicLifeCycleObject;
  * @author brianfox
  *
  */
-public abstract class Broker extends BasicLifeCycleObject {
+public abstract class Broker extends LifeCycle {
 
 	/**
 	 * Prompts this Broker to create an ExchangeSpace representation in the 
@@ -20,9 +23,10 @@ public abstract class Broker extends BasicLifeCycleObject {
 	 * 
 	 * @param mailbox specifies the parameters for the new ExchangeSpace.
 	 * @throws BrokerException thrown if the ExchangeSpace cannot be created.
+	 * @throws LifeCycleException 
 	 */
 	abstract public void createExchangeSpace(Mailbox mailbox)
-	throws BrokerException;
+	throws BrokerException, LifeCycleException;
 	
 
 	
@@ -32,9 +36,10 @@ public abstract class Broker extends BasicLifeCycleObject {
 	 * 
 	 * @param mailbox specifies the parameters for the new ExchangeName.
 	 * @throws BrokerException thrown if the binding cannot be created.
+	 * @throws LifeCycleException 
 	 */
 	abstract public void createExchangeName(Mailbox mailbox) 
-	throws BrokerException;
+	throws BrokerException, LifeCycleException;
 	
 	
 	
@@ -44,9 +49,10 @@ public abstract class Broker extends BasicLifeCycleObject {
 	 * 
 	 * @param mailbox specifies the parameters for the new Queue.
 	 * @throws BrokerException thrown if the binding cannot be created.
+	 * @throws LifeCycleException 
 	 */
 	abstract public void createQueue(Mailbox mailbox)
-	throws BrokerException;
+	throws BrokerException, LifeCycleException;
 
 	
 	
@@ -56,23 +62,46 @@ public abstract class Broker extends BasicLifeCycleObject {
 	 * 
 	 * @param mailbox specifies the parameters for the new Binding.
 	 * @throws BrokerException thrown if the binding cannot be created.
+	 * @throws LifeCycleException 
 	 */
 	abstract public void createBinding(Mailbox mailbox)
-	throws BrokerException;
+	throws BrokerException, LifeCycleException;
 
 	
 	
-	/**
-	 * Closes the broker connection.
-	 * 
-	 * @throws BrokerException thrown if this broker cannot be closed.
+	abstract public void createMailbox(Mailbox mailbox) 
+	throws BrokerException, LifeCycleException;
+	
+	/*
+	 * LIFE CYCLE METHODS 
 	 */
-	abstract public void close() 
-	throws BrokerException;
 
-
-
-	abstract public void createMailbox(Mailbox mailbox) throws BrokerException;
+	@Override
+	public void update(Observable o, Object arg) {
+		// System.err.print(o + "   " + arg);
+	}
 	
 	
+	@Override
+	public void slc_init() 
+	throws LifeCycleException 
+	{
+		
+	}
+	
+
+	@Override
+	public void slc_activate() 
+	throws LifeCycleException 
+	{			
+		super.slc_activate();
+	}
+
+	
+	@Override
+	public void slc_terminate() 
+	throws LifeCycleException 
+	{
+		super.slc_terminate();
+	}
 }

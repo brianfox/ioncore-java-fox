@@ -1,7 +1,7 @@
 package net.ooici.ion.cc.process;
 
-import net.ooici.ion.lifecycle.BasicLifeCycleObject;
+import net.ooici.ion.lifecycle.LifeCycle;
 
-public class ProcessManager extends BasicLifeCycleObject {
+public class ProcessManager extends LifeCycle {
 
 }
