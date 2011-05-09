@@ -29,7 +29,7 @@ public class BurstMailbox extends Mailbox {
 
 	@Override
 	public void onMail(Message m) {
-		log.debug("Received message, keys: " + m.getHeader().keySet().size());
+		// log.debug("Received message, keys: " + m.getHeader().keySet().size());
 
 		HashMap<String,String> map = new HashMap<String,String>();
 		map.put("a","A");

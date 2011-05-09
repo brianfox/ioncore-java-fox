@@ -1,0 +1,11 @@
+<aspectwerkz>
+    <system id="AspectWerkzExample">
+        <package name="testAOP">
+            <aspect class="MyAspect">
+                <pointcut name="greetMethod" expression="execution(* testAOP.HelloWorld.greet(..))"/>
+                <advice name="beforeGreeting" type="before" bind-to="greetMethod"/>
+                <advice name="afterGreeting" type="after" bind-to="greetMethod"/>
+            </aspect>
+        </package>
+    </system>
+</aspectwerkz>
