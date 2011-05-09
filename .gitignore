@@ -3,4 +3,5 @@ build/
 reports/
 .settings/
 .classpath
+.metadata
 .DS_Store
