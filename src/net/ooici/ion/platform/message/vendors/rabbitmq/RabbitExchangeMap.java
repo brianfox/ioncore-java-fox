@@ -3,8 +3,8 @@ package net.ooici.ion.platform.message.vendors.rabbitmq;
 import java.io.IOException;
 import com.rabbitmq.client.Channel;
 
-import net.ooici.ion.cc.message.stack.broker.BrokerException;
-import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
+import net.ooici.ion.cc.messaging.Mailbox;
+import net.ooici.ion.cc.messaging.MessagingException;
 
 
 /**
@@ -25,7 +25,7 @@ public class RabbitExchangeMap {
 	 * @throws IOException
 	 */
 	public static void declareExchange(Channel ch, Mailbox mailbox) 
-	throws BrokerException 
+	throws MessagingException 
 	{
 		String exchangeName = getExchangeName(mailbox);
 
@@ -51,14 +51,14 @@ public class RabbitExchangeMap {
 				ch.exchangeDeclare(exchangeName, "topic",  false, true, false, null);
 				break;
 			default:
-				throw new BrokerException(
+				throw new MessagingException(
 						"undefined exchange type: " 
 						+ mailbox.getExchangeName().getExchangeType()
 				);
 			}
 		}
 		catch (IOException e) {
-			throw new BrokerException("could not define RabbitMQ exchange: " + e.getMessage(), e);
+			throw new MessagingException("could not define RabbitMQ exchange: " + e.getMessage(), e);
 		}
 		// ch.exchangeDeclare(exchangeName, "direct", false);
 		// ch.exchangeDeclarePassive(exchangeName);
@@ -75,7 +75,7 @@ public class RabbitExchangeMap {
 	 * @throws IOException
 	 */
 	public static void declareQueue(Channel ch, Mailbox mailbox) 
-	throws BrokerException 
+	throws MessagingException 
 	{
 		String queueName = getQueueName(mailbox);
 
@@ -100,21 +100,21 @@ public class RabbitExchangeMap {
 				ch.queueDeclare(queueName, false, false, true, null);
 				break;
 			default:
-				throw new BrokerException(
+				throw new MessagingException(
 						"undefined exchange type: " 
 						+ mailbox.getExchangeName().getExchangeType()
 				);
 			}
 		}
 		catch (IOException e) {
-			throw new BrokerException("could not define RabbitMQ exchange: " + e.getMessage(), e);
+			throw new MessagingException("could not define RabbitMQ exchange: " + e.getMessage(), e);
 		}
 	}
 	
 
 	
 	public static void declareBinding(Channel ch, Mailbox mailbox) 
-	throws BrokerException 
+	throws MessagingException 
 	{
 		try {
 			String queueName = getQueueName(mailbox);
@@ -122,7 +122,7 @@ public class RabbitExchangeMap {
 			ch.queueBind(queueName, exchangeName, exchangeName);
 		}
 		catch (IOException e) {
-			throw new BrokerException("could not define RabbitMQ exchange: " + e.getMessage(), e);
+			throw new MessagingException("could not define RabbitMQ exchange: " + e.getMessage(), e);
 		}
 	}
 

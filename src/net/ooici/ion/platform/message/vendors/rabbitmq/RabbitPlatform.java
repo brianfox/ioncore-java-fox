@@ -2,10 +2,9 @@ package net.ooici.ion.platform.message.vendors.rabbitmq;
 
 import org.apache.log4j.Logger;
 
-import net.ooici.ion.cc.message.stack.broker.Broker;
-import net.ooici.ion.cc.message.stack.broker.BrokerException;
-import net.ooici.ion.cc.message.stack.dispatcher.Dispatcher;
-import net.ooici.ion.lifecycle.LifeCycle;
+import net.ooici.ion.cc.messaging.Broker;
+import net.ooici.ion.cc.messaging.Dispatcher;
+import net.ooici.ion.cc.messaging.MessagingException;
 import net.ooici.ion.platform.message.Platform;
 import net.ooici.ion.platform.message.PlatformException;
 import net.ooici.ion.properties.LocalProperties;
@@ -26,7 +25,7 @@ public class RabbitPlatform extends Platform {
 	public Broker createBroker(LocalProperties properties)
 	throws 
 		PlatformException, 
-		BrokerException, 
+		MessagingException, 
 		PropertiesException 
 	{
 		return RabbitBroker.createBroker(properties);

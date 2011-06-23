@@ -5,9 +5,11 @@ import java.util.Observable;
 
 import org.apache.log4j.Logger;
 
-import net.ooici.ion.cc.message.stack.broker.*;
-import net.ooici.ion.cc.message.stack.dispatcher.*;
-import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
+import net.ooici.ion.cc.messaging.Broker;
+import net.ooici.ion.cc.messaging.Dispatcher;
+import net.ooici.ion.cc.messaging.Mailbox;
+import net.ooici.ion.cc.messaging.MessageQueue;
+import net.ooici.ion.cc.messaging.MessagingException;
 import net.ooici.ion.lifecycle.LifeCycle;
 import net.ooici.ion.lifecycle.LifeCycleException;
 import net.ooici.ion.properties.*;
@@ -33,14 +35,14 @@ public class RabbitDispatcher extends Dispatcher {
 	
 	private Channel channel;
 	private RabbitBroker rbroker;
-	private LocalProperties properties;
+	// private LocalProperties properties;
 	
 	public RabbitDispatcher(
 			LocalProperties properties,
 			Broker broker
 	) 
 	throws 
-		BrokerException, 
+		MessagingException, 
 		PropertiesException 
 	{
 		// super(broker, scheduler);
@@ -48,7 +50,7 @@ public class RabbitDispatcher extends Dispatcher {
 
 		// Properties setup
 		checkProperties(properties);
-		this.properties = properties;
+		// this.properties = properties;
 		this.rbroker = (RabbitBroker)broker;
 	}
 
@@ -69,9 +71,7 @@ public class RabbitDispatcher extends Dispatcher {
 
 	@Override
 	public void registerMailbox(Mailbox mailbox) 
-	throws 
-		DispatcherException, 
-		BrokerException 
+	throws MessagingException
 	{
 		String queueName = String.format(
 				"%s.%s.%s",
@@ -89,7 +89,7 @@ public class RabbitDispatcher extends Dispatcher {
 		catch (IOException e) {
 			String err = String.format("could not create consumer for queue: %s, err: %s", queueName, e.getMessage());
 			log.error(err);
-			throw new DispatcherException(err, e);
+			throw new MessagingException(err, e);
 		}
 		log.debug("Created consumer for queue: " + queueName);
 	}
@@ -105,7 +105,7 @@ public class RabbitDispatcher extends Dispatcher {
 
 
 	private void resetChannel() 
-	throws BrokerException 
+	throws MessagingException 
 	{
 		if (!channel.isOpen()) {
 			channel = rbroker.getChannel();
@@ -124,7 +124,7 @@ public class RabbitDispatcher extends Dispatcher {
 	@Override
 	protected void publish(String address, String routingKey, byte[] raw) 
 	throws 
-		DispatcherException, 
+		MessagingException, 
 		LifeCycleException 
 	{
 		checkState(log, "publish", LifeCycle.State.ACTIVE);
@@ -146,16 +146,16 @@ public class RabbitDispatcher extends Dispatcher {
 				try {
 					resetChannel();
 				}
-				catch (BrokerException e1) {
+				catch (MessagingException e1) {
 					String err = String.format("Could not reset RabbitMQ Broker channel.");
 					log.error(err);
-					throw new DispatcherException(err);
+					throw new MessagingException(err);
 				}
 			}
 		}
 		String err = String.format("Could not send rabbit message.  Addr: %s  RoutingKey: %s", address, routingKey);
 		log.error(err);
-		throw new DispatcherException(err);
+		throw new MessagingException(err);
 	}
 
 	
@@ -176,7 +176,7 @@ public class RabbitDispatcher extends Dispatcher {
 		super.slc_activate();
 		try {
 			channel = rbroker.getChannel();
-		} catch (BrokerException e) {
+		} catch (MessagingException e) {
 			slc_error(e);
 		}
 	}

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import net.ooici.ion.cc.message.stack.dispatcher.MessageQueue;
+import net.ooici.ion.cc.messaging.MessageQueue;
 import net.ooici.ion.lifecycle.LifeCycleException;
 
 import com.rabbitmq.client.AMQP;

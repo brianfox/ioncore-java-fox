@@ -9,9 +9,9 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-import net.ooici.ion.cc.message.stack.broker.Broker;
-import net.ooici.ion.cc.message.stack.broker.BrokerException;
-import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
+import net.ooici.ion.cc.messaging.Broker;
+import net.ooici.ion.cc.messaging.Mailbox;
+import net.ooici.ion.cc.messaging.MessagingException;
 import net.ooici.ion.lifecycle.LifeCycle;
 import net.ooici.ion.lifecycle.LifeCycleException;
 import net.ooici.ion.properties.LocalProperties;
@@ -45,12 +45,12 @@ public class RabbitBroker extends Broker {
 	 * 
 	 * @param properties
 	 * @return
-	 * @throws BrokerException
+	 * @throws MessagingException
 	 * @throws PropertiesException
 	 */
 	public static Broker createBroker(LocalProperties properties) 
 	throws 
-		BrokerException, 
+		MessagingException, 
 		PropertiesException 
 	{
 		return new RabbitBroker(properties);
@@ -62,12 +62,12 @@ public class RabbitBroker extends Broker {
 	 * Breaks away from the interface, which is why it should be hidden.
 	 * 
 	 * @param properties
-	 * @throws BrokerException
+	 * @throws MessagingException
 	 * @throws PropertiesException
 	 */
 	private RabbitBroker(LocalProperties properties) 
 	throws 
-		BrokerException, 
+		MessagingException, 
 		PropertiesException 
 	{
 		this.properties = properties;
@@ -117,16 +117,16 @@ public class RabbitBroker extends Broker {
 	 * Creates a RabbitMQ Broker Channel.
 	 * 
 	 * @return
-	 * @throws BrokerException
+	 * @throws MessagingException
 	 */
-	public Channel getChannel() throws BrokerException {
+	public Channel getChannel() throws MessagingException {
 		try {
 			checkState(log, "getChannel", LifeCycle.State.ACTIVE);
 			return connection.createChannel();
 		} catch (Exception e) {
 			String err = String.format("Could not create rabbit channel: %s", e.getMessage());
 			log.error(err);
-			throw new BrokerException(err);
+			throw new MessagingException(err);
 		}
 	}
 
@@ -142,7 +142,7 @@ public class RabbitBroker extends Broker {
 	@Override
 	public void createMailbox(Mailbox mailbox) 
 	throws 
-		BrokerException, 
+		MessagingException, 
 		LifeCycleException 
 	{
 		checkState(log, "createMailbox", LifeCycle.State.ACTIVE);
@@ -186,7 +186,7 @@ public class RabbitBroker extends Broker {
 	@Override
 	public void createExchangeName(Mailbox mailbox) 
 	throws 
-		BrokerException, 
+		MessagingException, 
 		LifeCycleException
 	{
 		checkState(log, "createExchangeName", LifeCycle.State.ACTIVE);
@@ -204,7 +204,7 @@ public class RabbitBroker extends Broker {
 					e.getMessage()
 			);
 			log.error(err);
-			throw new BrokerException(err, e);
+			throw new MessagingException(err, e);
 		} 
 	}
 
@@ -219,7 +219,7 @@ public class RabbitBroker extends Broker {
 	@Override
 	public void createQueue(Mailbox mailbox) 
 	throws 
-		BrokerException, 
+		MessagingException, 
 		LifeCycleException
 	{
 		checkState(log, "createQueue", LifeCycle.State.ACTIVE);
@@ -237,7 +237,7 @@ public class RabbitBroker extends Broker {
 					e.getMessage()
 			);
 			log.error(err);
-			throw new BrokerException(err, e);
+			throw new MessagingException(err, e);
 		} 
 	}
 
@@ -245,7 +245,7 @@ public class RabbitBroker extends Broker {
 	@Override
 	public void createBinding(Mailbox mailbox)
 	throws 
-		BrokerException, 
+		MessagingException, 
 		LifeCycleException
 	{
 		checkState(log, "createBinding", LifeCycle.State.ACTIVE);
@@ -268,7 +268,7 @@ public class RabbitBroker extends Broker {
 					e.getMessage()
 			);
 			log.error(err);
-			throw new BrokerException(err, e);
+			throw new MessagingException(err, e);
 		} 
 	}
 

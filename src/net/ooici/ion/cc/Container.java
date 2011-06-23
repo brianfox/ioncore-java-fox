@@ -1,15 +1,13 @@
 package net.ooici.ion.cc;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Observable;
 
 import org.apache.log4j.Logger;
 
 import net.ooici.ion.cc.ContainerException;
-import net.ooici.ion.cc.message.MessageManager;
-import net.ooici.ion.cc.message.QosPriority;
-import net.ooici.ion.cc.message.stack.mailbox.Mailbox;
+import net.ooici.ion.cc.messaging.Mailbox;
+import net.ooici.ion.cc.messaging.MessageManager;
+import net.ooici.ion.cc.messaging.QosPriority;
 import net.ooici.ion.lifecycle.LifeCycle;
 import net.ooici.ion.lifecycle.LifeCycleException;
 import net.ooici.ion.platform.message.vendors.rabbitmq.RabbitBroker;
@@ -17,6 +15,7 @@ import net.ooici.ion.properties.LocalProperties;
 
 public class Container extends LifeCycle {
 
+	@SuppressWarnings("unused")
 	private static Logger log = Logger.getLogger(RabbitBroker.class);
 	
 	protected MessageManager msgManager;

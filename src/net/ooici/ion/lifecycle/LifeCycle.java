@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
-import net.ooici.ion.cc.message.stack.broker.BrokerException;
-
 import org.apache.log4j.Logger;
 
 public class LifeCycle extends Observable implements Observer {

@@ -1,8 +1,8 @@
 package net.ooici.ion.platform.message;
 
-import net.ooici.ion.cc.message.stack.broker.Broker;
-import net.ooici.ion.cc.message.stack.broker.BrokerException;
-import net.ooici.ion.cc.message.stack.dispatcher.Dispatcher;
+import net.ooici.ion.cc.messaging.Broker;
+import net.ooici.ion.cc.messaging.Dispatcher;
+import net.ooici.ion.cc.messaging.MessagingException;
 import net.ooici.ion.properties.LocalProperties;
 import net.ooici.ion.properties.PropertiesException;
 
@@ -24,12 +24,13 @@ abstract public class Platform {
 	 *         new BrokerController.
 	 * @throws PropertiesException 
 	 * @throws BrokerException 
+	 * @throws MessagingException 
 	 */
 	abstract public Broker createBroker(LocalProperties properties) 
 	throws 
 		PlatformException, 
-		BrokerException, 
-		PropertiesException;
+		PropertiesException, 
+		MessagingException;
 
 	
 	/**
