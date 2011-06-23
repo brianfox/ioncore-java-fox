@@ -17,7 +17,7 @@ import net.ooici.ion.cc.messaging.exchange.Queue;
 import net.ooici.ion.cc.messaging.message.Body;
 import net.ooici.ion.cc.messaging.message.Header;
 import net.ooici.ion.cc.messaging.message.Message;
-import net.ooici.ion.platform.message.vendors.rabbitmq.RabbitBroker;
+import net.ooici.ion.cc.messaging.platform.rabbitmq.RabbitBroker;
 import net.ooici.ion.properties.LocalProperties;
 
 public class ExperimentalContainer {

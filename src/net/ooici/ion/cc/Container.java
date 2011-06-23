@@ -8,9 +8,9 @@ import net.ooici.ion.cc.ContainerException;
 import net.ooici.ion.cc.messaging.Mailbox;
 import net.ooici.ion.cc.messaging.MessageManager;
 import net.ooici.ion.cc.messaging.QosPriority;
+import net.ooici.ion.cc.messaging.platform.rabbitmq.RabbitBroker;
 import net.ooici.ion.lifecycle.LifeCycle;
 import net.ooici.ion.lifecycle.LifeCycleException;
-import net.ooici.ion.platform.message.vendors.rabbitmq.RabbitBroker;
 import net.ooici.ion.properties.LocalProperties;
 
 public class Container extends LifeCycle {

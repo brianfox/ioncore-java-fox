@@ -1,4 +1,4 @@
-package net.ooici.ion.platform.message.vendors.rabbitmq;
+package net.ooici.ion.cc.messaging.platform.rabbitmq;
 
 import java.io.IOException;
 import com.rabbitmq.client.Channel;

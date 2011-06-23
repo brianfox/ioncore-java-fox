@@ -1,6 +1,7 @@
-package net.ooici.ion.platform.message;
+package net.ooici.ion.cc.messaging.platform;
 
-import net.ooici.ion.platform.message.vendors.rabbitmq.RabbitPlatform;
+import net.ooici.ion.cc.messaging.platform.rabbitmq.RabbitPlatform;
+
 
 /**
  * 

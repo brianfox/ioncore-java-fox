@@ -5,11 +5,11 @@ import java.util.Observable;
 import org.apache.log4j.Logger;
 
 import net.ooici.ion.cc.messaging.interceptor.InterceptorStack;
+import net.ooici.ion.cc.messaging.platform.Platform;
+import net.ooici.ion.cc.messaging.platform.PlatformFactory;
+import net.ooici.ion.cc.messaging.platform.PlatformType;
 import net.ooici.ion.lifecycle.LifeCycle;
 import net.ooici.ion.lifecycle.LifeCycleException;
-import net.ooici.ion.platform.message.Platform;
-import net.ooici.ion.platform.message.PlatformFactory;
-import net.ooici.ion.platform.message.PlatformType;
 import net.ooici.ion.properties.LocalProperties;
 
 /**

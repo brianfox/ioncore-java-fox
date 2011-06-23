@@ -1,4 +1,4 @@
-package net.ooici.ion.platform.message;
+package net.ooici.ion.cc.messaging.platform;
 
 /**
  * MessagingPlatformException provides custom exception handling for vendor

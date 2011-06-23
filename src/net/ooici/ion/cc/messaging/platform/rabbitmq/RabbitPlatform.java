@@ -1,12 +1,12 @@
-package net.ooici.ion.platform.message.vendors.rabbitmq;
+package net.ooici.ion.cc.messaging.platform.rabbitmq;
 
 import org.apache.log4j.Logger;
 
 import net.ooici.ion.cc.messaging.Broker;
 import net.ooici.ion.cc.messaging.Dispatcher;
 import net.ooici.ion.cc.messaging.MessagingException;
-import net.ooici.ion.platform.message.Platform;
-import net.ooici.ion.platform.message.PlatformException;
+import net.ooici.ion.cc.messaging.platform.Platform;
+import net.ooici.ion.cc.messaging.platform.PlatformException;
 import net.ooici.ion.properties.LocalProperties;
 import net.ooici.ion.properties.PropertiesException;
 
