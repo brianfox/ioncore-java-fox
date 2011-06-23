@@ -4,12 +4,12 @@ import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
-import net.ooici.ion.cc.message.MessageManager;
-import net.ooici.ion.cc.message.payload.Body;
-import net.ooici.ion.cc.message.payload.Header;
-import net.ooici.ion.cc.message.payload.Message;
+import net.ooici.ion.cc.messaging.MessageManager;
+import net.ooici.ion.cc.messaging.message.Body;
+import net.ooici.ion.cc.messaging.message.Header;
+import net.ooici.ion.cc.messaging.message.Message;
+import net.ooici.ion.cc.messaging.serialization.generic.MsgpackSerializer;
 import net.ooici.ion.platform.message.vendors.rabbitmq.RabbitBroker;
-import net.ooici.ion.platform.serialization.generic.MsgpackSerializer;
 
 public class Container {
 

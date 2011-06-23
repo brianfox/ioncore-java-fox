@@ -6,12 +6,13 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 import net.ooici.ion.cc.ContainerException;
-import net.ooici.ion.cc.message.exchange.ExchangeName;
-import net.ooici.ion.cc.message.exchange.ExchangeSpace;
-import net.ooici.ion.cc.message.exchange.Queue;
-import net.ooici.ion.cc.message.payload.Body;
-import net.ooici.ion.cc.message.payload.Header;
-import net.ooici.ion.cc.message.payload.Message;
+import net.ooici.ion.cc.messaging.Mailbox;
+import net.ooici.ion.cc.messaging.exchange.ExchangeName;
+import net.ooici.ion.cc.messaging.exchange.ExchangeSpace;
+import net.ooici.ion.cc.messaging.exchange.Queue;
+import net.ooici.ion.cc.messaging.message.Body;
+import net.ooici.ion.cc.messaging.message.Header;
+import net.ooici.ion.cc.messaging.message.Message;
 
 
 public class BurstMailbox extends Mailbox {
