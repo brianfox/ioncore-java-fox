@@ -10,7 +10,7 @@ import net.ooici.util.msgpack.MessagePackException;
 import net.ooici.util.msgpack.MessagePackType;
 import net.ooici.util.msgpack.elements.MPElement;
 import net.ooici.util.msgpack.elements.MPLong;
-import net.ooici.util.string.PrettyPrint;
+import net.ooici.util.string.HexPrettyPrint;
 
 
 
@@ -71,7 +71,7 @@ public class MPLongTest {
     					l.getLong(), 
     					((MPLong)result).getLong(),
     					String.format("[%x]",l.getLong()), 
-    					PrettyPrint.hexDumpSimple(b),
+    					HexPrettyPrint.hexDumpSimple(b),
     					MessagePackType.getType(b[0] & 0xFF),
     					l.getLong() == ((MPLong)result).getLong() ? "Ok" : "Fail"
     					

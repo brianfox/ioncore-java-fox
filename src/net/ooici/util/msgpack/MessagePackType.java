@@ -1,5 +1,13 @@
 package net.ooici.util.msgpack;
 
+/**
+ * See http://wiki.msgpack.org/display/MSGPACK/Format+specification for
+ * a complete explanation of this code.
+ * 
+ * @author brianfox
+ *
+ */
+
 public enum MessagePackType {
 
 	POSITIVE_FIX_NUM,

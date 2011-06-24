@@ -2,7 +2,8 @@ package net.ooici.ion.cc.messaging;
 
 import java.util.Observable;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.ooici.ion.cc.messaging.interceptor.InterceptorStack;
 import net.ooici.ion.cc.messaging.platform.Platform;
@@ -27,7 +28,7 @@ import net.ooici.ion.properties.LocalProperties;
  */
 public class MessageStack  extends LifeCycle {
 
-	private static Logger log = Logger.getLogger(MessageStack.class);
+	Logger logger = LoggerFactory.getLogger(MessageStack.class);
 
 	private Platform platform;
 	private Broker broker;
@@ -39,7 +40,7 @@ public class MessageStack  extends LifeCycle {
 	{
 		try {
 			PlatformType type = PlatformType.fromString(p.getString("platform"));
-			log.info(String.format(
+			logger.info(String.format(
 					"%s starting: type=%s", 
 					this.getClass().getSimpleName(), 
 					type
@@ -53,7 +54,7 @@ public class MessageStack  extends LifeCycle {
 			broker.addObserver(this);
 			dispatcher.addObserver(this);
 			
-			log.info(String.format("%s started successfully", this.getClass().getSimpleName()));
+			logger.info(String.format("%s started successfully", this.getClass().getSimpleName()));
 		}
 		catch (Exception e) {
 			this.slc_error(e);

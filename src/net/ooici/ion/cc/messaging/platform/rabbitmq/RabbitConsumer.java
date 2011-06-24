@@ -2,10 +2,8 @@ package net.ooici.ion.cc.messaging.platform.rabbitmq;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
-
-import net.ooici.ion.cc.messaging.MessageQueue;
-import net.ooici.ion.lifecycle.LifeCycleException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -14,6 +12,10 @@ import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.ShutdownSignalException;
 import com.rabbitmq.utility.Utility;
 
+import net.ooici.ion.cc.messaging.MessageQueue;
+import net.ooici.ion.lifecycle.LifeCycleException;
+
+
 /**
  * 
  * @author brianfox
@@ -21,7 +23,7 @@ import com.rabbitmq.utility.Utility;
  */
 public class RabbitConsumer extends DefaultConsumer {
 
-	private static Logger log = Logger.getLogger(RabbitConsumer.class);
+	Logger logger = LoggerFactory.getLogger(RabbitConsumer.class);
 	
 	private MessageQueue queue;
 	private volatile ShutdownSignalException shutdown;
@@ -33,7 +35,7 @@ public class RabbitConsumer extends DefaultConsumer {
 	) {
 	    super(channel);
 	    this.queue = queue;
-		log.debug("Created RabbitConsumer: " + queue.getMailbox().oneLiner());
+		logger.debug("Created RabbitConsumer: " + queue.getMailbox().oneLiner());
 	}
 
 
@@ -45,7 +47,7 @@ public class RabbitConsumer extends DefaultConsumer {
 	) 
 	{
 	    shutdown = sig;
-		log.debug("Closed RabbitConsumer: " + queue.getMailbox().oneLiner());
+		logger.debug("Closed RabbitConsumer: " + queue.getMailbox().oneLiner());
 	}
 	
 	

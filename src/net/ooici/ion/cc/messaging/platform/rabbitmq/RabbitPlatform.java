@@ -1,6 +1,7 @@
 package net.ooici.ion.cc.messaging.platform.rabbitmq;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.ooici.ion.cc.messaging.Broker;
 import net.ooici.ion.cc.messaging.Dispatcher;
@@ -19,7 +20,7 @@ import net.ooici.ion.properties.PropertiesException;
  */
 public class RabbitPlatform extends Platform {
 	
-	private static Logger log = Logger.getLogger(RabbitPlatform.class);
+	Logger logger = LoggerFactory.getLogger(RabbitPlatform.class);
 
 	@Override
 	public Broker createBroker(LocalProperties properties)
@@ -42,7 +43,7 @@ public class RabbitPlatform extends Platform {
 			return new RabbitDispatcher(properties, broker);
 		} catch (Exception e) {
 			String err = "Unable to create RabbitDispatcher: " + e.getClass().getName();
-			log.error(err);
+			logger.error(err);
 			throw new PlatformException(err, e);
 		} 
 

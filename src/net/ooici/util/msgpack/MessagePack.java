@@ -11,17 +11,9 @@ import net.ooici.util.msgpack.elements.MPElement;
 
 
 /**
- * Partial MessagePack implementation.  This class is written to address some 
+ * A simple MessagePack implementation.  This class is written to address some 
  * of the pitfalls of the official MessagePack release (http://msgpack.org/), 
  * namely, the size, complexity, and typing strategy.<br> 
- * <br>
- * This MessagePack class aims for simplicity.  It can correctly parse all 
- * the types defined by the MessagePack protocol 
- * (http://redmine.msgpack.org/projects/msgpack/wiki/FormatSpec) but does not
- * yet provide a Java translation for each of those types.  In particular, 
- * floating point numbers and signed integers greater than 31 bits are not
- * handled.  This should be fairly easy to implement.<br>
- * <br>
  * 
  * @author brianfox
  *

@@ -9,7 +9,7 @@ import net.ooici.util.msgpack.MessagePackException;
 import net.ooici.util.msgpack.MessagePackType;
 import net.ooici.util.msgpack.elements.MPElement;
 import net.ooici.util.msgpack.elements.MPRaw;
-import net.ooici.util.string.PrettyPrint;
+import net.ooici.util.string.HexPrettyPrint;
 
 
 
@@ -82,9 +82,9 @@ public class MPRawTest {
     			String.format(
     			    	"%8d  %-36s  %-36s  %-36s  %-10s  %-6s",
     			    	raw.length,
-    					"[" + trim(PrettyPrint.hexDumpSimple(raw), 30) + "]",
-    					"[" + trim(PrettyPrint.hexDumpSimple(result.getBytes()), 30) + "]",
-    					trim(PrettyPrint.hexDumpSimple(bytes), 30),
+    					"[" + trim(HexPrettyPrint.hexDumpSimple(raw), 30) + "]",
+    					"[" + trim(HexPrettyPrint.hexDumpSimple(result.getBytes()), 30) + "]",
+    					trim(HexPrettyPrint.hexDumpSimple(bytes), 30),
     					MessagePackType.getType(bytes[0] & 0xFF),
     					success ? "Ok" : "Fail"
     			)

@@ -2,7 +2,8 @@ package net.ooici.ion.cc;
 
 import java.util.Observable;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.ooici.ion.cc.ContainerException;
 import net.ooici.ion.cc.messaging.Mailbox;
@@ -16,7 +17,7 @@ import net.ooici.ion.properties.LocalProperties;
 public class Container extends LifeCycle {
 
 	@SuppressWarnings("unused")
-	private static Logger log = Logger.getLogger(RabbitBroker.class);
+	Logger logger = LoggerFactory.getLogger(RabbitBroker.class);
 	
 	protected MessageManager msgManager;
 	

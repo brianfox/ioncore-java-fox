@@ -10,7 +10,7 @@ import net.ooici.util.msgpack.MessagePackException;
 import net.ooici.util.msgpack.MessagePackType;
 import net.ooici.util.msgpack.elements.MPDouble;
 import net.ooici.util.msgpack.elements.MPElement;
-import net.ooici.util.string.PrettyPrint;
+import net.ooici.util.string.HexPrettyPrint;
 
 
 
@@ -50,7 +50,7 @@ public class MPDoubleTest {
     					"%-25s  %-25s  %-20s  %-18s  %-6s", 
     					D.getDouble(), 
     					result.getDouble(),
-    					PrettyPrint.hexDumpSimple(b),
+    					HexPrettyPrint.hexDumpSimple(b),
     					MessagePackType.getType(b[0] & 0xFF),
     					D.getDouble() == result.getDouble() ? "Ok" : "Fail"
     					

@@ -3,9 +3,9 @@ package net.ooici.ion.cc.message.stack.mailbox;
 
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import net.ooici.ion.cc.ContainerException;
 import net.ooici.ion.cc.messaging.Mailbox;
 import net.ooici.ion.cc.messaging.exchange.ExchangeName;
 import net.ooici.ion.cc.messaging.exchange.ExchangeSpace;
@@ -21,7 +21,7 @@ public class BurstMailbox extends Mailbox {
 	long time = 0;
 	long burstSize = 50;
 	
-	private static Logger log = Logger.getLogger(BurstMailbox.class);
+	Logger logger = LoggerFactory.getLogger(BurstMailbox.class);
 	
 	public BurstMailbox(ExchangeSpace es, ExchangeName en, Queue q) {
 		super(es, en, q);
@@ -52,7 +52,7 @@ public class BurstMailbox extends Mailbox {
 			long nano = System.nanoTime() - time;
 			long sec = nano / 1000000000L;
 			float mps = count * 1.0F / sec;
-			log.info(String.format("Count:  %20d    Msg/s:  %5.2f", count, mps));
+			logger.info(String.format("Count:  %20d    Msg/s:  %5.2f", count, mps));
 			//log.info(String.format("%n%s%n", m));
 		}
 		// for (String s : m.getHeader().keySet())

@@ -1,21 +1,18 @@
 package net.ooici.ion.aspects;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public aspect TraceLoggingAspect pertypewithin(*) {
 
+	
 	private Logger logger;
 	
 	after() returning: staticinitialization(*) { 
-		logger = Logger.getLogger(getWithinTypeName());
-		logger.setLevel(Level.DEBUG);
-		logger.addAppender(new ConsoleAppender(new PatternLayout("%d{ISO8601} %-5p [%t]: %m%n")));
+		logger = LoggerFactory.getLogger(getWithinTypeName());
 	}
 	
-	pointcut any()
-	: execution(public * *.*(..));
+	pointcut any(): execution(public * *.*(..));
 
 	before() : any() {
 		if (logger.isTraceEnabled()) {

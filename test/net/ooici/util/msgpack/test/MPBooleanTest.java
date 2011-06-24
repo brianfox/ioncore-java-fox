@@ -9,7 +9,7 @@ import net.ooici.util.msgpack.MessagePackException;
 import net.ooici.util.msgpack.MessagePackType;
 import net.ooici.util.msgpack.elements.MPBoolean;
 import net.ooici.util.msgpack.elements.MPElement;
-import net.ooici.util.string.PrettyPrint;
+import net.ooici.util.string.HexPrettyPrint;
 
 
 
@@ -41,7 +41,7 @@ public class MPBooleanTest {
     			    	"%-8s  %-8s  %-10s  %-10s  %-6s",
     					b, 
     					((MPBoolean)result).getBoolean(),
-    					PrettyPrint.hexDumpSimple(bytes),
+    					HexPrettyPrint.hexDumpSimple(bytes),
     					MessagePackType.getType(bytes[0] & 0xFF),
     					B.getBoolean() == ((MPBoolean)result).getBoolean() ? "Ok" : "Fail"
     			)

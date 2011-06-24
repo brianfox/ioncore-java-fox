@@ -3,7 +3,8 @@ package net.ooici.ion.cc.messaging.platform.rabbitmq;
 import java.io.IOException;
 import java.util.Observable;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -24,7 +25,7 @@ import net.ooici.ion.properties.PropertiesException;
  */
 public class RabbitBroker extends Broker {
 
-	private static Logger log = Logger.getLogger(RabbitBroker.class);
+	Logger logger = LoggerFactory.getLogger(RabbitBroker.class);
 
 	
 	public static final String[] REQUIRED_PROPERTIES = 
@@ -86,7 +87,7 @@ public class RabbitBroker extends Broker {
 		factory.setHost(host);
 		factory.setPort(port);
 
-		log.info(String.format("%s started successfully", this.getClass().getSimpleName()));
+		logger.info(String.format("%s started successfully", this.getClass().getSimpleName()));
 
 	}
 
@@ -105,7 +106,7 @@ public class RabbitBroker extends Broker {
 		for (String s : REQUIRED_PROPERTIES) {
 			if (!properties.containsKey(s)) {
 				String err = String.format("required field missing from properties: %s", s);
-				log.error(err);
+				logger.error(err);
 				throw new PropertiesException(err);
 			}
 		}
@@ -121,11 +122,11 @@ public class RabbitBroker extends Broker {
 	 */
 	public Channel getChannel() throws MessagingException {
 		try {
-			checkState(log, "getChannel", LifeCycle.State.ACTIVE);
+			checkState(logger, "getChannel", LifeCycle.State.ACTIVE);
 			return connection.createChannel();
 		} catch (Exception e) {
 			String err = String.format("Could not create rabbit channel: %s", e.getMessage());
-			log.error(err);
+			logger.error(err);
 			throw new MessagingException(err);
 		}
 	}
@@ -145,7 +146,7 @@ public class RabbitBroker extends Broker {
 		MessagingException, 
 		LifeCycleException 
 	{
-		checkState(log, "createMailbox", LifeCycle.State.ACTIVE);
+		checkState(logger, "createMailbox", LifeCycle.State.ACTIVE);
 		
 		createExchangeSpace(mailbox);
 		createExchangeName(mailbox);
@@ -170,8 +171,8 @@ public class RabbitBroker extends Broker {
 		// This is a purposeful no op.  There is no ExchangeSpace equivalent 
 		// representation in AMQP
 
-		checkState(log, "createExchangeSpace", LifeCycle.State.ACTIVE);
-		log.debug("Created exchange space: " + mailbox.getExchangeSpace().getName());
+		checkState(logger, "createExchangeSpace", LifeCycle.State.ACTIVE);
+		logger.debug("Created exchange space: " + mailbox.getExchangeSpace().getName());
 	}
 
 	
@@ -189,13 +190,13 @@ public class RabbitBroker extends Broker {
 		MessagingException, 
 		LifeCycleException
 	{
-		checkState(log, "createExchangeName", LifeCycle.State.ACTIVE);
+		checkState(logger, "createExchangeName", LifeCycle.State.ACTIVE);
 		try {
 			Channel channel = null;
 			channel = connection.createChannel();
 			RabbitExchangeMap.declareExchange(channel, mailbox);
 			channel.close();
-			log.debug("Created exchange name: " + mailbox.getExchangeName().getName());
+			logger.debug("Created exchange name: " + mailbox.getExchangeName().getName());
 		} 
 		catch (IOException e) {
 			String err = String.format(
@@ -203,7 +204,7 @@ public class RabbitBroker extends Broker {
 					RabbitExchangeMap.getExchangeName(mailbox), 
 					e.getMessage()
 			);
-			log.error(err);
+			logger.error(err);
 			throw new MessagingException(err, e);
 		} 
 	}
@@ -222,13 +223,13 @@ public class RabbitBroker extends Broker {
 		MessagingException, 
 		LifeCycleException
 	{
-		checkState(log, "createQueue", LifeCycle.State.ACTIVE);
+		checkState(logger, "createQueue", LifeCycle.State.ACTIVE);
 		try {
 			Channel channel = null;
 			channel = connection.createChannel();
 			RabbitExchangeMap.declareQueue(channel, mailbox);
 			channel.close();
-			log.debug("Created queue: " + mailbox.getQueue().getName());
+			logger.debug("Created queue: " + mailbox.getQueue().getName());
 		} 
 		catch (Exception e) {
 			String err = String.format(
@@ -236,7 +237,7 @@ public class RabbitBroker extends Broker {
 					RabbitExchangeMap.getQueueName(mailbox), 
 					e.getMessage()
 			);
-			log.error(err);
+			logger.error(err);
 			throw new MessagingException(err, e);
 		} 
 	}
@@ -248,13 +249,13 @@ public class RabbitBroker extends Broker {
 		MessagingException, 
 		LifeCycleException
 	{
-		checkState(log, "createBinding", LifeCycle.State.ACTIVE);
+		checkState(logger, "createBinding", LifeCycle.State.ACTIVE);
 		try {
 			Channel channel = null;
 			channel = connection.createChannel();
 			RabbitExchangeMap.declareBinding(channel, mailbox);
 			channel.close();
-			log.debug(String.format(
+			logger.debug(String.format(
 					"Created binding %s.%s -> %s",
 					mailbox.getExchangeSpace().getName(),
 					mailbox.getExchangeName().getName(),
@@ -267,7 +268,7 @@ public class RabbitBroker extends Broker {
 					RabbitExchangeMap.getQueueName(mailbox), 
 					e.getMessage()
 			);
-			log.error(err);
+			logger.error(err);
 			throw new MessagingException(err, e);
 		} 
 	}

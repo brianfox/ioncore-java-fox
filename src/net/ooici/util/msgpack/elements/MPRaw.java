@@ -8,8 +8,24 @@ import java.util.Arrays;
 
 import net.ooici.util.msgpack.MessagePackException;
 import net.ooici.util.msgpack.elements.MPElement;
-import net.ooici.util.string.PrettyPrint;
+import net.ooici.util.string.HexPrettyPrint;
 
+/**
+ * Supports the "raw bytes" types in the MessagePack specification.  This
+ * includes fix raw, raw16 and raw32.  Used in its simpler manner, MPRaw
+ * provides a way to send and receive byte arrays.<br>
+ * <br>
+ * Some MessagePack implementations use the raw type to represent Strings.  
+ * Unfortunately, there is no formal encoding procedures.  For example, 
+ * Python's msgpack module does not specify whether the string is encoding 
+ * in ASCII or unicode.  (It's actually UTF-8 by default, but this is 
+ * unspecified and not guaranteed on all platforms).  MPRaw provides a set
+ * of convenience methods to "guess" what encoding was used when treating
+ * byte arrays as text.
+ *
+ * @author brianfox
+ *
+ */
 public class MPRaw extends MPElement {
 	
 	/*
@@ -100,14 +116,14 @@ public class MPRaw extends MPElement {
 		try {
 			return new String(raw, defaultCharset);
 		} catch (UnsupportedEncodingException e) {
-			return String.format("UNSUPPORTED CHARSET%nHEX DUMP:%n%s%n", PrettyPrint.hexDump(raw));
+			return String.format("UNSUPPORTED CHARSET%nHEX DUMP:%n%s%n", HexPrettyPrint.hexDump(raw));
 		}
 	}
 	
 
 	public boolean isPrintable() {
 		for (byte b : raw)
-			if (!PrettyPrint.isPrintable(b))
+			if (!HexPrettyPrint.isPrintable(b))
 				return false;
 		return true;
 	}
@@ -117,6 +133,7 @@ public class MPRaw extends MPElement {
 		return Arrays.copyOf(raw, raw.length);
 	}
 
+	
 	@Override
 	public void encodeTo(DataOutputStream out) 
 	throws MessagePackException 

@@ -3,7 +3,8 @@ package net.ooici.ion.cc.messaging;
 import java.util.Observable;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.ooici.ion.cc.ContainerException;
 import net.ooici.ion.lifecycle.LifeCycle;
@@ -22,7 +23,7 @@ import net.ooici.ion.properties.PropertiesException;
  */
 public class MessageManager extends LifeCycle {
 
-	private static Logger log = Logger.getLogger(MessageManager.class);
+	Logger logger = LoggerFactory.getLogger(MessageManager.class);
 
 	public static final String CONFIG_SECTION = "MessageManager";
 	
@@ -56,12 +57,12 @@ public class MessageManager extends LifeCycle {
 				QosPriority q = QosPriority.fromString(d);
 				if (q == QosPriority.NONE) {
 					String err = String.format("unknown QosPriority: %s", d);
-					log.error(err);
+					logger.error(err);
 					throw new PropertiesException(err);
 				}
 				if (stacks.containsKey(q)) {
 					String err = String.format("QosPriority division is already defined: %s", d);
-					log.error(err);
+					logger.error(err);
 					throw new PropertiesException(err);
 				}
 				stacks.put(QosPriority.fromString(d), new MessageStack(p));
@@ -82,7 +83,7 @@ public class MessageManager extends LifeCycle {
 	{
 		if (!stacks.containsKey(q)) {
 			String err = String.format("unknown QosPriority: %s", q);
-			log.error(err); 
+			logger.error(err); 
 			throw new MessagingException(err);
 		}
 		stacks.get(q).registerMailbox(mailbox);

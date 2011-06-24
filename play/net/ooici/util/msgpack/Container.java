@@ -2,7 +2,8 @@ package net.ooici.util.msgpack;
 
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.ooici.ion.cc.messaging.MessageManager;
 import net.ooici.ion.cc.messaging.message.Body;
@@ -13,7 +14,7 @@ import net.ooici.ion.cc.messaging.serialization.generic.MsgpackSerializer;
 
 public class Container {
 
-	private static Logger log = Logger.getLogger(RabbitBroker.class);
+	Logger logger = LoggerFactory.getLogger(RabbitBroker.class);
 	
 	private MessageManager msgManager;
 

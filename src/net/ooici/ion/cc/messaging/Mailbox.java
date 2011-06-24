@@ -11,7 +11,7 @@ import net.ooici.ion.lifecycle.LifeCycleException;
 
 public abstract class Mailbox extends LifeCycle {
 	
-	// private static Logger log = Logger.getLogger(Mailbox.class);
+	// Logger logger = LoggerFactory.getLogger(Mailbox.class);
 	
 	private Dispatcher dispatcher;
 	private ExchangeSpace es;

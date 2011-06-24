@@ -5,7 +5,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.ooici.ion.cc.messaging.interceptor.InterceptorStack;
 import net.ooici.ion.cc.messaging.interceptor.InterceptorStack.IncomingDecision;
@@ -38,7 +39,7 @@ public abstract class Dispatcher extends LifeCycle {
 	private SchedulerThread schedulerThread;
 	private LocalProperties properties;
 	
-	private static Logger log = Logger.getLogger(Dispatcher.class);
+	Logger logger = LoggerFactory.getLogger(Dispatcher.class);
 	
 	
 	public Dispatcher(
@@ -58,7 +59,7 @@ public abstract class Dispatcher extends LifeCycle {
 		int keep_alive_time_ms = this.properties.getInt("keep_alive_time_ms");
 
 
-		log.info(String.format(
+		logger.info(String.format(
 				"%s starting: core_thread_count=%d   " + 
 				"max_thread_count=%d   keep_alive_time_ms=%d",
 				this.getClass().getSimpleName(),
@@ -86,7 +87,7 @@ public abstract class Dispatcher extends LifeCycle {
 	
 
 	public void dispatch(MessageQueue queue) throws LifeCycleException {
-		checkState(log, "dispatch", LifeCycle.State.ACTIVE);
+		checkState(logger, "dispatch", LifeCycle.State.ACTIVE);
 		schedule(queue);
 	}
 
@@ -96,20 +97,20 @@ public abstract class Dispatcher extends LifeCycle {
 		MessagingException, 
 		LifeCycleException 
 	{
-		checkState(log, "send", LifeCycle.State.ACTIVE);
+		checkState(logger, "send", LifeCycle.State.ACTIVE);
 
 		if (message == null)
 			throw new MessagingException("Could not send null rabbit packet.");
 
 		Header header = message.getHeader();
-		log.trace(String.format(
+		logger.trace(String.format(
 				"Sending a message, exchange=%s routingKey=%s", 
 				header.get("destination"), 
 				header.get("routingkey")
 		));
 		
 		OutgoingDecision out = interceptorStack.interceptOutgoing(message);
-		log.trace(out.toString());
+		logger.trace(out.toString());
 		if (out.getResult() == InterceptorStack.Result.ACCEPTED) {
 			publish("estest.entest", "estest.entest", out.getRaw());
 		}
@@ -131,7 +132,7 @@ public abstract class Dispatcher extends LifeCycle {
 	public void schedule(MessageQueue queue) 
 	throws LifeCycleException 
 	{
-		checkState(log, "send", LifeCycle.State.ACTIVE);
+		checkState(logger, "send", LifeCycle.State.ACTIVE);
 		schedulerThread.schedule(queue);
 	}
 	
@@ -146,7 +147,7 @@ public abstract class Dispatcher extends LifeCycle {
 		for (String s : REQUIRED_PROPERTIES) {
 			if (!properties.containsKey(s)) {
 				String err = String.format("required field missing: %s", this.getClass().getSimpleName());
-				log.error(err);
+				logger.error(err);
 				throw new PropertiesException(err);
 			}
 		}

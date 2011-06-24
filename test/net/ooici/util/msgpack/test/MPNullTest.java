@@ -9,7 +9,7 @@ import net.ooici.util.msgpack.MessagePackException;
 import net.ooici.util.msgpack.MessagePackType;
 import net.ooici.util.msgpack.elements.MPElement;
 import net.ooici.util.msgpack.elements.MPNull;
-import net.ooici.util.string.PrettyPrint;
+import net.ooici.util.string.HexPrettyPrint;
 
 
 
@@ -40,7 +40,7 @@ public class MPNullTest {
     			    	"%-8s  %-8s  %-10s  %-10s  %-6s",
     					null, 
     					result.getNull(),
-    					PrettyPrint.hexDumpSimple(bytes),
+    					HexPrettyPrint.hexDumpSimple(bytes),
     					MessagePackType.getType(bytes[0] & 0xFF),
     					N.getNull() == result.getNull() ? "Ok" : "Fail"
     			)

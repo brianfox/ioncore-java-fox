@@ -4,9 +4,8 @@ package net.ooici.util.string;
  * Provides hexadecimal static utility methods.
  * 
  * @author brianfox
- *
  */
-public class PrettyPrint {
+public class HexPrettyPrint {
 
 	
 	/**
@@ -26,11 +25,11 @@ public class PrettyPrint {
 
 	/** 
 	 * Creates a BSD hexdump(1) style multi-line multi-column display from
-	 * the byte array provided.  The first column in the display shows the
-	 * current row/first column offset in the file.  The next column shows
-	 * the hex values of the next 16 bytes in the file.  The last row shows
-	 * each of the hex values displayed in ASCII or a period if it the byte
-	 * is not printable.
+	 * the byte array provided.<br>
+	 * <br>  
+	 * The first column displays the offset.  The second column displays up
+	 * to 16 bytes as hex.  The third column displays an ASCII representation
+	 * of the byte (or a period if it the byte is not printable).
 	 *  
 	 * @param raw
 	 * @return
@@ -63,7 +62,15 @@ public class PrettyPrint {
 	}
 
 
-	
+
+	/**
+	 * Prepends whitespace to each line in a String.  A line is defined as
+	 * a string of characters followed by a newline ('\n').
+	 * 
+	 * @param s the String to pad
+	 * @param pad the number of spaces to prepend.
+	 * @return the padded String.
+	 */
 	public static String pad(String s, int pad) {
 		String p = String.format("%" + Integer.toString(pad) + "s", " ");
 		StringBuilder sb = new StringBuilder();
@@ -91,6 +98,12 @@ public class PrettyPrint {
 
 
 
+	/**
+	 * Produces a quick and dirty hex dump of a byte array.
+	 * 
+	 * @param byteArray the byte array 
+	 * @return a String a String representation
+	 */
 	public static String hexDumpSimple(byte[] byteArray) {
 		StringBuilder all = new StringBuilder();
 		for (byte b : byteArray) {

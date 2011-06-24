@@ -3,7 +3,8 @@ package net.ooici.ion.cc.messaging.interceptor;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.ooici.ion.cc.messaging.MessagingException;
 import net.ooici.ion.cc.messaging.message.Message;
@@ -76,7 +77,7 @@ public class InterceptorStack {
 		}
 	}
 	
-	private static Logger log = Logger.getLogger(InterceptorStack.class);
+	Logger logger = LoggerFactory.getLogger(InterceptorStack.class);
 	
 	protected ArrayList<SortableSerializer> serializers;
 
@@ -172,7 +173,7 @@ public class InterceptorStack {
 				continue;
 			}
 		String err = String.format("No serializer available to serialize message.");
-		log.error(err);
+		logger.error(err);
 		throw new MessagingException(err);
 	}
 
@@ -188,7 +189,7 @@ public class InterceptorStack {
 				continue;
 			}
 		String err = String.format("No serializer available to deserialize byte array.");
-		log.error(err);
+		logger.error(err);
 		throw new MessagingException(err);
 	}
 

@@ -3,19 +3,22 @@ package net.ooici.ion.cc.messaging.platform.rabbitmq;
 import java.io.IOException;
 import java.util.Observable;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.ooici.ion.cc.messaging.MessageQueue;
+import net.ooici.ion.lifecycle.LifeCycleException;
+
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.MessageProperties;
 
 import net.ooici.ion.cc.messaging.Broker;
 import net.ooici.ion.cc.messaging.Dispatcher;
 import net.ooici.ion.cc.messaging.Mailbox;
-import net.ooici.ion.cc.messaging.MessageQueue;
 import net.ooici.ion.cc.messaging.MessagingException;
 import net.ooici.ion.lifecycle.LifeCycle;
-import net.ooici.ion.lifecycle.LifeCycleException;
 import net.ooici.ion.properties.*;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.MessageProperties;
 
 /**
  * 
@@ -24,7 +27,7 @@ import com.rabbitmq.client.MessageProperties;
  */
 public class RabbitDispatcher extends Dispatcher {
 
-	private static Logger log = Logger.getLogger(RabbitDispatcher.class);
+	Logger logger = LoggerFactory.getLogger(RabbitDispatcher.class);
 	
 	public static final String[] REQUIRED_PROPERTIES = 
 		new String[]
@@ -62,7 +65,7 @@ public class RabbitDispatcher extends Dispatcher {
 		for (String s : REQUIRED_PROPERTIES) {
 			if (!properties.containsKey(s)) {
 				String err = String.format("required field missing: %s", this.getClass().getSimpleName());
-				log.error(err);
+				logger.error(err);
 				throw new PropertiesException(err);
 			}
 		}
@@ -88,16 +91,16 @@ public class RabbitDispatcher extends Dispatcher {
 		}
 		catch (IOException e) {
 			String err = String.format("could not create consumer for queue: %s, err: %s", queueName, e.getMessage());
-			log.error(err);
+			logger.error(err);
 			throw new MessagingException(err, e);
 		}
-		log.debug("Created consumer for queue: " + queueName);
+		logger.debug("Created consumer for queue: " + queueName);
 	}
 
 	
 	@Override
 	public void unregisterMailbox(Mailbox m) throws LifeCycleException {
-		checkState(log, "publish", LifeCycle.State.ACTIVE);
+		checkState(logger, "publish", LifeCycle.State.ACTIVE);
 
 		// TODO Auto-generated method stub
 		
@@ -109,7 +112,7 @@ public class RabbitDispatcher extends Dispatcher {
 	{
 		if (!channel.isOpen()) {
 			channel = rbroker.getChannel();
-			log.info(
+			logger.info(
 					"Forced to reset RabbitMQ channel in dispatcher.  " 
 					+ "Check AMQP spec for events that might close a channel."
 			);
@@ -127,7 +130,7 @@ public class RabbitDispatcher extends Dispatcher {
 		MessagingException, 
 		LifeCycleException 
 	{
-		checkState(log, "publish", LifeCycle.State.ACTIVE);
+		checkState(logger, "publish", LifeCycle.State.ACTIVE);
 
 		for (int i=0; i < 2; i++) {
 			try {
@@ -142,19 +145,19 @@ public class RabbitDispatcher extends Dispatcher {
 				return;
 			}
 			catch (Exception e) {
-				log.info("Reset RabbitMQ Broker channel after failing to publish message.");
+				logger.info("Reset RabbitMQ Broker channel after failing to publish message.");
 				try {
 					resetChannel();
 				}
 				catch (MessagingException e1) {
 					String err = String.format("Could not reset RabbitMQ Broker channel.");
-					log.error(err);
+					logger.error(err);
 					throw new MessagingException(err);
 				}
 			}
 		}
 		String err = String.format("Could not send rabbit message.  Addr: %s  RoutingKey: %s", address, routingKey);
-		log.error(err);
+		logger.error(err);
 		throw new MessagingException(err);
 	}
 

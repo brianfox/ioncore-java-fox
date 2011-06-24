@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.ooici.util.msgpack.MessagePackException;
-import net.ooici.util.string.PrettyPrint;
+import net.ooici.util.string.HexPrettyPrint;
 
 public class MPMap extends MPElement {
 	HashMap<MPElement, MPElement> map;
@@ -62,7 +62,7 @@ public class MPMap extends MPElement {
 			if (val.indexOf('\n') < 0)
 				sb.append(String.format("    key: %-30s  val: %-80s%n", s, val));
 			else
-				sb.append(String.format("    key: %-30s  val:%n%s%n", s, PrettyPrint.pad(val,8)));
+				sb.append(String.format("    key: %-30s  val:%n%s%n", s, HexPrettyPrint.pad(val,8)));
 		}
 		return sb.toString();
 	}

@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class LifeCycle extends Observable implements Observer {
 
@@ -87,9 +89,9 @@ public class LifeCycle extends Observable implements Observer {
 	private Logger getLogger(String className) {
 		if (cachedLoggers.containsKey(className))
 			return cachedLoggers.get(className);
-		Logger log = Logger.getLogger(className);
-		cachedLoggers.put(className, log);
-		return log;
+		Logger logger = LoggerFactory.getLogger(className);
+		cachedLoggers.put(className, logger);
+		return logger;
 	}
 	
 	private void changeState(State original, State next) 
